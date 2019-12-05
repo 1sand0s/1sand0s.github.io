@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Corner House at UT</title>
+
+
+        <!-- Bootstrap Core CSS -->
+        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+
+        <meta name="tags" contents="AT89S51" />
+        <meta name="tags" contents="8051 Board" />
+
+
+			<meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Corner House at UT">
+
+	<meta property="og:type" content="article">
+	<meta property="article:author" content="">
+	<meta property="og:url" content="/make-your-own-8051at89s51-board.html">
+	<meta property="og:title" content="Make your own 8051(AT89S51) Board">
+	<meta property="og:description" content="">
+	<meta property="og:image" content="/">
+	<meta property="article:published_time" content="2019-12-04 19:11:00-06:00">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Corner House at UT</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Make your own 8051(AT89S51) Board</h1>
+                        <span class="meta">Posted by
+                                <a href="/author/auditt.html">AudiTT</a>
+                             on Wed 04 December 2019
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>I had a week off for thanksgiving and thought it was worth the time to start designing some basic general puprose MCU boards
+to build upon for more complex projects later on.</p>
+<p>The AT89S51 based off of Intel's famous MCS-51 instruction set is an 8-bit CISC microcontroller. Its fairly simple and so I
+though of beginning my blog by detailing how to design a general purpose board centred on arguably its most popular variant 
+AT89S51 (there are other variants supplied by Zilog, Philips etc).</p>
+<p>Its important that if you choose to use an 8051 from Atmel (Microchip) in your design that you go for the <strong>AT89S51</strong> rather
+than <strong>AT89C51</strong> since the <strong>S</strong> variant offers in-system programming (ISP) and hence allowing SPI and other protocols to be used 
+to program the MCU without needing a dedicated programmer. </p>
+<p>The Kicad schematic for the board is explained below</p>
+<p><img alt="Photo" src="/PowerSupply.PNG"></p>
+<p>The power supply for the MCU is made up of a voltage regulator <strong>MC78L05</strong> which is capable of outputting 5V DC from an input
+of 5V to 15V DC. I have added an additional 330uF bulk decoupling capacitor in case the MCU draws too much current during which
+the low frequency ripple in the power supply line will be reduced by the bulk decoupling capacitor. Presently however, I haven't
+found the need yet to include it but just in case.</p>
+<p><img alt="Photo" src="/Crystal.PNG"></p>
+<p>The oscilltor is the usual <strong>Pierce-type oscillator</strong> employing a standard 24Mhz crystal from Abracon (through hole). The Abracon crystal
+oscillator has a load capacitance of 18pF and hence the caps(<span class="math">\(C_p\)</span>) employed to match this impedance is given by the formula
+<span class="math">\(C_p = 2 * C_L - 2 * C_{stray}\)</span></p>
+<p>I have ignored <span class="math">\(C_{stray}\)</span> the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.</p>
+<p><img alt="Photo" src="/TestLED.PNG"></p>
+<p>As is customary, the Hello World equivalent of a hardware project is the LED blink test. D1 is the Power status LED whereas D2 is the test LED
+and is connected to the fifth pin of Port 1. Before programming, the RST should be pulled high for 2 machine cycles to reset the MCU. To perform
+this reset quickly, I have added a pushbutton SPST between RST and VCC.</p>
+<p><img alt="Photo" src="/MCU.PNG"></p>
+<p>The only interesting thing mentioning in MCU schematic is that the bypass capacitor 0.1uF has to be placed as close as possible to the VCC supply
+pin of the MCU to ensure that the shortest path is available for the high frequency currents(ripples) to flow back to the source.
+Essentially it decreases the parasitic inductance by reducing the loop area.</p>
+<p>The Unsoldered and the Soldered boards : Kudos to OSHPark </p>
+<p><img src="UnSoldered.jpg" width="700" height="700" />    <img src="Soldered.jpg" width="700" height="700" /></p>
+<p>Lets take a quick look at the blink test before heading onto the programming intracacies.</p>
+<iframe src="http://www.youtube.com/embed/fNMvQsAE2kg"
+   width="600" height="400" frameborder="0" allowfullscreen>
+</iframe>
+
+<p>The usage of AT89S51 has emphasized before makes programming the board extremely simple. We are going to use SPI (Serial Peripheral Interface)
+protocol. I had an Arduino Mega lying around and decided to use that as the ISP (In-system Programmer).</p>
+<p>These are the steps to be followed to program the 8051 board.</p>
+<ol>
+<li>
+<p>Upload the ArduinoISP code to the arduino you intend to use as the ISP</p>
+</li>
+<li>
+<p>Connect MISO of Arduino to MISO of the 8051 board</p>
+</li>
+<li>
+<p>Connect MOSI of Arduino to MOSI of the 8051 board</p>
+</li>
+<li>
+<p>Connect SCK of Arduino to SCK of the 8051 board</p>
+</li>
+<li>
+<p>The maximum baud rate allowed is equal to <span class="math">\(\frac{8051 Crystal Frequency}{16}\)</span>. I usually use 19200</p>
+</li>
+<li>
+<p>To simplify the avrdude upload process I have written a powershell script(runs only on Windows but can easily be ported).</p>
+</li>
+<li>
+<p>Download the powershell script from my github repository and add the folder called Bootloader to your environment path variable</p>
+</li>
+<li>
+<p>Edit the bootloader.ps1 file present inside the Bootloader folder such that $AVRDUDE_HOME points to the avr_dude.exe and $CONF_FILE points to 
+   the config file for 8051 (F40R96CIUSLFZFP.conf). The config file is also present in the Bootloader directory.</p>
+</li>
+<li>
+<p>Proceed to the directory where your HEX file is present and upload it using powershell by executing the command </p>
+<div class="highlight"><pre><span></span><span class="err">                                      bootloader.ps1 COM3 19200 your_hex_file.hex</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Detailed procedure can be found by executing the command</p>
+<div class="highlight"><pre><span></span><span class="err">                                      bootloader.ps1 -h</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Once the code has been successfully uploaded to the 8051, short the EA/VPP pin and the VCC pin to ensure that the code memory is read from internal
+    ROM.</p>
+</li>
+</ol>
+<p><a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board">Github Link to the Powershell Scripts and Kicad Project</a></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+    </article>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Blog powered by <a href="http://getpelican.com">Pelican</a>,
+                which takes great advantage of <a href="http://python.org">Python</a>.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/theme/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
