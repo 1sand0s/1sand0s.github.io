@@ -105,9 +105,9 @@ be dealing with a single slave and hence this signal is not relevant for us.&lt;
 &lt;/dd&gt;
 &lt;/dl&gt;
 &lt;p&gt;The transmit FSM is as follows&lt;/p&gt;
-&lt;p&gt;&lt;img src="fsmTransmit.jpg" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/fsmTransmit.jpg" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;p&gt;and the receive FSM is as follows&lt;/p&gt;
-&lt;p&gt;&lt;img src="fsmReceive.jpg" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/fsmReceive.jpg" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
