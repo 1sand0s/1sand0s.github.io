@@ -114,26 +114,26 @@ AT89S51 (there are other variants supplied by Zilog, Philips etc).</p>
 than <strong>AT89C51</strong> since the <strong>S</strong> variant offers in-system programming (ISP) and hence allowing SPI and other protocols to be used 
 to program the MCU without needing a dedicated programmer. </p>
 <p>The Kicad schematic for the board is explained below</p>
-<p><img alt="Photo" src="/Images/PowerSupply.PNG"></p>
+<p><img alt="Photo" src="/images/PowerSupply.PNG"></p>
 <p>The power supply for the MCU is made up of a voltage regulator <strong>MC78L05</strong> which is capable of outputting 5V DC from an input
 of 5V to 15V DC. I have added an additional 330uF bulk decoupling capacitor in case the MCU draws too much current during which
 the low frequency ripple in the power supply line will be reduced by the bulk decoupling capacitor. Presently however, I haven't
 found the need yet to include it but just in case.</p>
-<p><img alt="Photo" src="/Images/Crystal.PNG"></p>
+<p><img alt="Photo" src="/images/Crystal.PNG"></p>
 <p>The oscilltor is the usual <strong>Pierce-type oscillator</strong> employing a standard 24Mhz crystal from Abracon (through hole). The Abracon crystal
 oscillator has a load capacitance of 18pF and hence the caps(<span class="math">\(C_p\)</span>) employed to match this impedance is given by the formula
 <span class="math">\(C_p = 2 * C_L - 2 * C_{stray}\)</span></p>
 <p>I have ignored <span class="math">\(C_{stray}\)</span> the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.</p>
-<p><img alt="Photo" src="/Images/TestLED.PNG"></p>
+<p><img alt="Photo" src="/images/TestLED.PNG"></p>
 <p>As is customary, the Hello World equivalent of a hardware project is the LED blink test. D1 is the Power status LED whereas D2 is the test LED
 and is connected to the fifth pin of Port 1. Before programming, the RST should be pulled high for 2 machine cycles to reset the MCU. To perform
 this reset quickly, I have added a pushbutton SPST between RST and VCC.</p>
-<p><img alt="Photo" src="/Images/MCU.PNG"></p>
+<p><img alt="Photo" src="/images/MCU.PNG"></p>
 <p>The only interesting thing mentioning in MCU schematic is that the bypass capacitor 0.1uF has to be placed as close as possible to the VCC supply
 pin of the MCU to ensure that the shortest path is available for the high frequency currents(ripples) to flow back to the source.
 Essentially it decreases the parasitic inductance by reducing the loop area.</p>
 <p>The Unsoldered and the Soldered boards : Kudos to OSHPark </p>
-<p><img src="/Images/UnSoldered.jpg" width="700" height="700" />    <img src="/Images/Soldered.jpg" width="700" height="700" /></p>
+<p><img src="/images/UnSoldered.jpg" width="700" height="700" />    <img src="/images/Soldered.jpg" width="700" height="700" /></p>
 <p>Lets take a quick look at the blink test before heading onto the programming intracacies.</p>
 <iframe src="//www.youtube.com/embed/fNMvQsAE2kg"
    width="600" height="400" frameborder="0" allowfullscreen>

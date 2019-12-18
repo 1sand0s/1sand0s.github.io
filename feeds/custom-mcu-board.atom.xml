@@ -8,26 +8,26 @@ AT89S51 (there are other variants supplied by Zilog, Philips etc).&lt;/p&gt;
 than &lt;strong&gt;AT89C51&lt;/strong&gt; since the &lt;strong&gt;S&lt;/strong&gt; variant offers in-system programming (ISP) and hence allowing SPI and other protocols to be used 
 to program the MCU without needing a dedicated programmer. &lt;/p&gt;
 &lt;p&gt;The Kicad schematic for the board is explained below&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/Images/PowerSupply.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/images/PowerSupply.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;The power supply for the MCU is made up of a voltage regulator &lt;strong&gt;MC78L05&lt;/strong&gt; which is capable of outputting 5V DC from an input
 of 5V to 15V DC. I have added an additional 330uF bulk decoupling capacitor in case the MCU draws too much current during which
 the low frequency ripple in the power supply line will be reduced by the bulk decoupling capacitor. Presently however, I haven't
 found the need yet to include it but just in case.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/Images/Crystal.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/images/Crystal.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;The oscilltor is the usual &lt;strong&gt;Pierce-type oscillator&lt;/strong&gt; employing a standard 24Mhz crystal from Abracon (through hole). The Abracon crystal
 oscillator has a load capacitance of 18pF and hence the caps(&lt;span class="math"&gt;\(C_p\)&lt;/span&gt;) employed to match this impedance is given by the formula
 &lt;span class="math"&gt;\(C_p = 2 * C_L - 2 * C_{stray}\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;I have ignored &lt;span class="math"&gt;\(C_{stray}\)&lt;/span&gt; the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/Images/TestLED.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/images/TestLED.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;As is customary, the Hello World equivalent of a hardware project is the LED blink test. D1 is the Power status LED whereas D2 is the test LED
 and is connected to the fifth pin of Port 1. Before programming, the RST should be pulled high for 2 machine cycles to reset the MCU. To perform
 this reset quickly, I have added a pushbutton SPST between RST and VCC.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/Images/MCU.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/images/MCU.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;The only interesting thing mentioning in MCU schematic is that the bypass capacitor 0.1uF has to be placed as close as possible to the VCC supply
 pin of the MCU to ensure that the shortest path is available for the high frequency currents(ripples) to flow back to the source.
 Essentially it decreases the parasitic inductance by reducing the loop area.&lt;/p&gt;
 &lt;p&gt;The Unsoldered and the Soldered boards : Kudos to OSHPark &lt;/p&gt;
-&lt;p&gt;&lt;img src="/Images/UnSoldered.jpg" width="700" height="700" /&gt;    &lt;img src="/Images/Soldered.jpg" width="700" height="700" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/UnSoldered.jpg" width="700" height="700" /&gt;    &lt;img src="/images/Soldered.jpg" width="700" height="700" /&gt;&lt;/p&gt;
 &lt;p&gt;Lets take a quick look at the blink test before heading onto the programming intracacies.&lt;/p&gt;
 &lt;iframe src="//www.youtube.com/embed/fNMvQsAE2kg"
    width="600" height="400" frameborder="0" allowfullscreen&gt;
