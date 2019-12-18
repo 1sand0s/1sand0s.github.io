@@ -109,7 +109,7 @@ be dealing with a single slave and hence this signal is not relevant for us.&lt;
 &lt;p&gt;and the receive FSM&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/fsmReceive.jpg" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;p&gt;The behavioural simulation of the verilog module is as follows&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/spiTransfer.PNG" width="800" height="400" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/spiTransfer.png" width="800" height="400" /&gt;&lt;/p&gt;
 &lt;p&gt;SSPTXD is our MOSI
 SSPCLKOUT is our SCK
 PSEL is our SS&lt;/p&gt;
