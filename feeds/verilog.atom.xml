@@ -110,9 +110,15 @@ be dealing with a single slave and hence this signal is not relevant for us.&lt;
 &lt;p&gt;&lt;img src="/images/fsmReceive.jpg" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;p&gt;The behavioural simulation of the verilog module is as follows&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/spiTransfer.png" width="800" height="400" /&gt;&lt;/p&gt;
-&lt;p&gt;SSPTXD is our MOSI
-SSPCLKOUT is our SCK
-PSEL is our SS&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SSPTXD is our MOSI&lt;/li&gt;
+&lt;li&gt;SSPCLKOUT is our SCK&lt;/li&gt;
+&lt;li&gt;PSEL is our SS&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Since PCLK is faster than SSPCLKOUT, I have added a FIFO buffer in the transmit module to prevent data loss. The FIFO
+buffer depth can be varied. The SSPTXINTR signal indicates that the FIFO buffer is full and hence anymore data sent
+to the transmit module to be written will be lost. PWDATA is the data to be written/sent, whereas CLEAR_B is our reset
+signal.&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
