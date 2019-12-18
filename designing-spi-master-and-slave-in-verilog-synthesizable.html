@@ -210,10 +210,15 @@ The SCK is used to synchronize data transfers and initiate state changes in our 
 be dealing with a single slave and hence this signal is not relevant for us.</p>
 </dd>
 </dl>
-<p>The transmit FSM is as follows</p>
+<p>The transmit FSM</p>
 <p><img src="/images/fsmTransmit.jpg" width="800" height="600" /></p>
-<p>and the receive FSM is as follows</p>
+<p>and the receive FSM</p>
 <p><img src="/images/fsmReceive.jpg" width="800" height="600" /></p>
+<p>The behavioural simulation of the verilog module is as follows</p>
+<p><img src="/images/spiTransfer.PNG" width="800" height="400" /></p>
+<p>SSPTXD is our MOSI
+SSPCLKOUT is our SCK
+PSEL is our SS</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
