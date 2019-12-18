@@ -223,8 +223,9 @@ be dealing with a single slave and hence this signal is not relevant for us.</p>
 </ol>
 <p>Since PCLK is faster than SSPCLKOUT, I have added a FIFO buffer in the transmit module to prevent data loss. The FIFO
 buffer depth can be varied. The SSPTXINTR signal indicates that the FIFO buffer is full and hence anymore data sent
-to the transmit module to be written will be lost. PWDATA is the data to be written/sent, whereas CLEAR_B is our reset
+to the transmit module to be written will be lost. PWDATA is the data to be written/sent whereas CLEAR_B is our reset
 signal.</p>
+<p><a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module">Github Link to the SPI/SSP verilog module</a></p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
