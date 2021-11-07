@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Verilog</title><link href="/" rel="alternate"></link><link href="/feeds/verilog.atom.xml" rel="self"></link><id>/</id><updated>2019-12-06T19:11:00-06:00</updated><entry><title>Designing SPI Master and Slave in Verilog (Synthesizable)</title><link href="/designing-spi-master-and-slave-in-verilog-synthesizable.html" rel="alternate"></link><published>2019-12-06T19:11:00-06:00</published><updated>2019-12-06T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2019-12-06:/designing-spi-master-and-slave-in-verilog-synthesizable.html</id><summary type="html">&lt;p&gt;This post details how to design an SPI Master and Slave using Verilog. The design is implemented using FSM.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the previous post, we had a look at designing a general purpose board based on the popular AT89S51 MCU. We took advantage of the fact
+that the &lt;strong&gt;S&lt;/strong&gt; variant of Atmel's 8051 series allows ISP(In-System programming) and hence we used an Arduino as the in-system programmer to 
+burn code onto our board by means of the protocol SPI (Serial Peripheral Interface). In this post, I would like to detail what SPI is, how can
+one design it in HDL(Hardware descriptive language) and upload our SPI module onto an FPGA and use that to program our 8051 board.&lt;/p&gt;
+&lt;h3&gt; Brief Review of Intel HEX format &lt;/h3&gt;
+
+&lt;p&gt;If you followed the previous 8051 tutorial, you'll remeber that we burned in a sample &lt;strong&gt;blinky.hex&lt;/strong&gt; program onto our 8051 board to make it blink
+with an approximate delay of 1 second. The contents of the &lt;strong&gt;assembly file&lt;/strong&gt; are as given below&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;ORG&lt;/span&gt; &lt;span class="nt"&gt;0000H&lt;/span&gt;
+        &lt;span class="nt"&gt;SJMP&lt;/span&gt; &lt;span class="nt"&gt;BLINKY&lt;/span&gt;
+
+&lt;span class="nt"&gt;DELAY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;08H&lt;/span&gt;            &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+&lt;span class="nt"&gt;DELAY2&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;0FFH&lt;/span&gt;           &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+&lt;span class="nt"&gt;DELAY3&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;0FFH&lt;/span&gt;           &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+&lt;span class="nt"&gt;AGAIN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;AGAIN&lt;/span&gt;          &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+        &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;DELAY3&lt;/span&gt;         &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+        &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;DELAY2&lt;/span&gt;         &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+        &lt;span class="nt"&gt;RET&lt;/span&gt;                     &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+
+&lt;span class="nt"&gt;BLINKY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;ACALL&lt;/span&gt; &lt;span class="nt"&gt;DELAY&lt;/span&gt;             &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+        &lt;span class="nt"&gt;CPL&lt;/span&gt; &lt;span class="nt"&gt;P1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;4&lt;/span&gt;                &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+        &lt;span class="nt"&gt;SJMP&lt;/span&gt; &lt;span class="nt"&gt;BLINKY&lt;/span&gt;             &lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;Delay&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;Machine&lt;/span&gt; &lt;span class="nt"&gt;Cycle&lt;/span&gt;
+
+
+&lt;span class="nt"&gt;END&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I have commented the delay in number of machine cycles so that the reader can confirm that the blink period is indeed 1 second (you need to factor in the crystal frequency
+of 24 MHz which results in each Machine cycle being 0.5u seconds). &lt;/p&gt;
+&lt;p&gt;The mneumonics representing the instructions such as SJMP are in reality a HEX code/number. The assembler is 
+responsible for translating an assembly program containing mneumonics to machine language file containing purely HEX codes. The HEX file contents can be understood by replacing our 
+assembly language file mneumonic instruction line by line with the corresponding HEX code.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;ORG&lt;/span&gt; &lt;span class="nt"&gt;0000H&lt;/span&gt;                       &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;Address&lt;/span&gt;    &lt;span class="nt"&gt;HEX&lt;/span&gt; &lt;span class="nt"&gt;code&lt;/span&gt;    &lt;span class="nt"&gt;Reasoning&lt;/span&gt;
+        &lt;span class="nt"&gt;SJMP&lt;/span&gt; &lt;span class="nt"&gt;BLINKY&lt;/span&gt;             &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0000H&lt;/span&gt;      &lt;span class="nt"&gt;800DH&lt;/span&gt;       &lt;span class="nt"&gt;80&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;SJMP&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;0D&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;BLINKY&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;000FH&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;relative&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;PC&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0002H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;         
+
+&lt;span class="nt"&gt;DELAY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;08H&lt;/span&gt;            &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0002H&lt;/span&gt;      &lt;span class="nt"&gt;7808H&lt;/span&gt;       &lt;span class="nt"&gt;78&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R0&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;08&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;immediate&lt;/span&gt; &lt;span class="nt"&gt;operand&lt;/span&gt; &lt;span class="nt"&gt;08H&lt;/span&gt;
+&lt;span class="nt"&gt;DELAY2&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;0FFH&lt;/span&gt;           &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0004H&lt;/span&gt;      &lt;span class="nt"&gt;79FFH&lt;/span&gt;       &lt;span class="nt"&gt;79&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;FF&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;immidiate&lt;/span&gt; &lt;span class="nt"&gt;operand&lt;/span&gt; &lt;span class="nt"&gt;FFH&lt;/span&gt;
+&lt;span class="nt"&gt;DELAY3&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;0FFH&lt;/span&gt;           &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0006H&lt;/span&gt;      &lt;span class="nt"&gt;7AFFH&lt;/span&gt;       &lt;span class="nt"&gt;7A&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;MOV&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;FF&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;immidiate&lt;/span&gt; &lt;span class="nt"&gt;operand&lt;/span&gt; &lt;span class="nt"&gt;FFH&lt;/span&gt;
+&lt;span class="nt"&gt;AGAIN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;AGAIN&lt;/span&gt;          &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0008H&lt;/span&gt;      &lt;span class="nt"&gt;DAFEH&lt;/span&gt;       &lt;span class="nt"&gt;DA&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R2&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;FE&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;AGAIN&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0008H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;relative&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;PC&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;000AH&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+        &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;DELAY3&lt;/span&gt;         &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;000AH&lt;/span&gt;      &lt;span class="nt"&gt;D9FAH&lt;/span&gt;       &lt;span class="nt"&gt;D9&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R1&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;FA&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;DELAY3&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0006H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;relative&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;PC&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;000CH&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+        &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;DELAY2&lt;/span&gt;         &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;000CH&lt;/span&gt;      &lt;span class="nt"&gt;D8F6H&lt;/span&gt;       &lt;span class="nt"&gt;D8&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;DJNZ&lt;/span&gt; &lt;span class="nt"&gt;R0&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;F6&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;DELAY2&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0004H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;relative&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;PC&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;000EH&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+        &lt;span class="nt"&gt;RET&lt;/span&gt;                     &lt;span class="o"&gt;;&lt;/span&gt;      &lt;span class="nt"&gt;0EH&lt;/span&gt;        &lt;span class="nt"&gt;22H&lt;/span&gt;       &lt;span class="nt"&gt;PC&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt; &lt;span class="nt"&gt;with&lt;/span&gt; &lt;span class="nt"&gt;SP&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0011H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="nt"&gt;BLINKY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;ACALL&lt;/span&gt; &lt;span class="nt"&gt;DELAY&lt;/span&gt;             &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;000FH&lt;/span&gt;      &lt;span class="nt"&gt;1102H&lt;/span&gt;       &lt;span class="nt"&gt;11&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;ACALL&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;02&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;DELAY&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0002H&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="nt"&gt;SP&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt; &lt;span class="nt"&gt;with&lt;/span&gt; &lt;span class="nt"&gt;PC&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0011H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+        &lt;span class="nt"&gt;CPL&lt;/span&gt; &lt;span class="nt"&gt;P1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;4&lt;/span&gt;                &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0011H&lt;/span&gt;      &lt;span class="nt"&gt;B294H&lt;/span&gt;       &lt;span class="nt"&gt;B2&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;CPL&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;94&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;Port&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;bit&lt;/span&gt; &lt;span class="nt"&gt;5&lt;/span&gt;
+        &lt;span class="nt"&gt;SJMP&lt;/span&gt; &lt;span class="nt"&gt;BLINKY&lt;/span&gt;             &lt;span class="o"&gt;;&lt;/span&gt;    &lt;span class="nt"&gt;0013H&lt;/span&gt;      &lt;span class="nt"&gt;80FAH&lt;/span&gt;       &lt;span class="nt"&gt;80&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;SJMP&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;FA&lt;/span&gt; &lt;span class="nt"&gt;represents&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;of&lt;/span&gt; &lt;span class="nt"&gt;BLINKY&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;000FH&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;relative&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;PC&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0015H&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+
+&lt;span class="nt"&gt;END&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The HEX file for the above program is as given below&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/images/hexFormat.png"&gt;&lt;/p&gt;
+&lt;p&gt;I have marked the nibbles according to what they represent&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Red nibbles represent the number of data bytes (black nibbles) in that line. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Green nibbles represent a 2 byte address which indicates where that particular line is going to be written in the PROM of 8051&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Black nibbles represent the data. If you notice carefully, this matches the HEX code we wrote down &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Orange nibbles represent whether that particular line has data bytes or if its end of file. 00 = data bytes and 01 = end of file&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Blue nibbles represent the checksum for that line which is used to ensure integrity of the code burnt in&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt; Serial Peripheral Interface (SPI) &lt;/h3&gt;
+
+&lt;p&gt;Now that we have seen the HEX file for our assembly program, it is this HEX file we are going to transfer to our 8051 byte by byte using SPI.
+SPI is a full duplex (simultaneous transmit and receive) synchronous communication protocol. The signals required for SPI to work are &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SCK (Serial Clock)&lt;/li&gt;
+&lt;li&gt;MISO (Master In Slave Out)&lt;/li&gt;
+&lt;li&gt;MOSI (Master Out Slave In)&lt;/li&gt;
+&lt;li&gt;SS (Slave Select)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;SPI can have more than one slave but only one master.&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;&lt;h5&gt; SCK &lt;/h5&gt;&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;The master is responsible for generating the serial clock. The maximum frequency/baud rate is dictated by both the master and slave's
+receive rate. For 8051, the max baud rate allowed is &lt;span class="math"&gt;\(\frac{1}{16}\)&lt;/span&gt;th of crystal frequency. Since our crystal frequency is 24Mhz, the max baud rate is 1.5MHz.
+The SCK is used to synchronize data transfers and initiate state changes in our FSM based SPI module.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;h5&gt; MISO &lt;/h5&gt;&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;MISO is the line on which the slave transmits data and the master receives data.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;h5&gt; MOSI &lt;/h5&gt;&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;MOSI is the line on which the master transmits data and the slave receives data.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;&lt;h5&gt; SS &lt;/h5&gt;&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;Since SPI can have more than one slave, the SS is used to select a particular slave for communication. Since we are interested in using SPI for burning programs, we will
+be dealing with a single slave and hence this signal is not relevant for us.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;The transmit FSM&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/fsmTransmit.jpg" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;and the receive FSM&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/fsmReceive.jpg" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;The behavioural simulation of the verilog module is as follows&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/spiTransfer.png" width="800" height="400" /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SSPTXD is our MOSI&lt;/li&gt;
+&lt;li&gt;SSPCLKOUT is our SCK&lt;/li&gt;
+&lt;li&gt;PSEL is our SS&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Since PCLK is faster than SSPCLKOUT, I have added a FIFO buffer in the transmit module to prevent data loss. The FIFO
+buffer depth can be varied. The SSPTXINTR signal indicates that the FIFO buffer is full and hence anymore data sent
+to the transmit module to be written will be lost. PWDATA is the data to be written/sent whereas CLEAR_B is our reset
+signal.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module"&gt;Github Link to the SPI/SSP verilog module&lt;/a&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Verilog"></category><category term="SPI"></category><category term="Serial Interface"></category></entry></feed>

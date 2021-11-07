@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+
+        <title>Corner House at UT</title>
+
+
+        <!-- Bootstrap Core CSS -->
+        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+
+        <meta name="tags" contents="SPI" />
+        <meta name="tags" contents="Serial Interface" />
+
+
+			<meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Corner House at UT">
+
+	<meta property="og:type" content="article">
+	<meta property="article:author" content="">
+	<meta property="og:url" content="/designing-spi-master-and-slave-in-verilog-synthesizable.html">
+	<meta property="og:title" content="Designing SPI Master and Slave in Verilog (Synthesizable)">
+	<meta property="og:description" content="">
+	<meta property="og:image" content="/">
+	<meta property="article:published_time" content="2019-12-06 19:11:00-06:00">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Corner House at UT</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Designing SPI Master and Slave in Verilog (Synthesizable)</h1>
+                        <span class="meta">Posted by
+                                <a href="/author/auditt.html">AudiTT</a>
+                             on Fri 06 December 2019
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>In the previous post, we had a look at designing a general purpose board based on the popular AT89S51 MCU. We took advantage of the fact
+that the <strong>S</strong> variant of Atmel's 8051 series allows ISP(In-System programming) and hence we used an Arduino as the in-system programmer to 
+burn code onto our board by means of the protocol SPI (Serial Peripheral Interface). In this post, I would like to detail what SPI is, how can
+one design it in HDL(Hardware descriptive language) and upload our SPI module onto an FPGA and use that to program our 8051 board.</p>
+<h3> Brief Review of Intel HEX format </h3>
+
+<p>If you followed the previous 8051 tutorial, you'll remeber that we burned in a sample <strong>blinky.hex</strong> program onto our 8051 board to make it blink
+with an approximate delay of 1 second. The contents of the <strong>assembly file</strong> are as given below</p>
+<div class="highlight"><pre><span></span><span class="nt">ORG</span> <span class="nt">0000H</span>
+        <span class="nt">SJMP</span> <span class="nt">BLINKY</span>
+
+<span class="nt">DELAY</span><span class="o">:</span>  <span class="nt">MOV</span> <span class="nt">R0</span><span class="o">,</span> <span class="p">#</span><span class="nn">08H</span>            <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">1</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+<span class="nt">DELAY2</span><span class="o">:</span> <span class="nt">MOV</span> <span class="nt">R1</span><span class="o">,</span> <span class="p">#</span><span class="nn">0FFH</span>           <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">1</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+<span class="nt">DELAY3</span><span class="o">:</span> <span class="nt">MOV</span> <span class="nt">R2</span><span class="o">,</span> <span class="p">#</span><span class="nn">0FFH</span>           <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">1</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+<span class="nt">AGAIN</span><span class="o">:</span>  <span class="nt">DJNZ</span> <span class="nt">R2</span><span class="o">,</span> <span class="nt">AGAIN</span>          <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">2</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+        <span class="nt">DJNZ</span> <span class="nt">R1</span><span class="o">,</span> <span class="nt">DELAY3</span>         <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">2</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+        <span class="nt">DJNZ</span> <span class="nt">R0</span><span class="o">,</span> <span class="nt">DELAY2</span>         <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">2</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+        <span class="nt">RET</span>                     <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">2</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+
+<span class="nt">BLINKY</span><span class="o">:</span> <span class="nt">ACALL</span> <span class="nt">DELAY</span>             <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">2</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+        <span class="nt">CPL</span> <span class="nt">P1</span><span class="p">.</span><span class="nc">4</span>                <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">1</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+        <span class="nt">SJMP</span> <span class="nt">BLINKY</span>             <span class="o">;</span><span class="nt">Delay</span> <span class="nt">of</span> <span class="nt">2</span> <span class="nt">Machine</span> <span class="nt">Cycle</span>
+
+
+<span class="nt">END</span>
+</pre></div>
+
+
+<p>I have commented the delay in number of machine cycles so that the reader can confirm that the blink period is indeed 1 second (you need to factor in the crystal frequency
+of 24 MHz which results in each Machine cycle being 0.5u seconds). </p>
+<p>The mneumonics representing the instructions such as SJMP are in reality a HEX code/number. The assembler is 
+responsible for translating an assembly program containing mneumonics to machine language file containing purely HEX codes. The HEX file contents can be understood by replacing our 
+assembly language file mneumonic instruction line by line with the corresponding HEX code.</p>
+<div class="highlight"><pre><span></span><span class="nt">ORG</span> <span class="nt">0000H</span>                       <span class="o">;</span>    <span class="nt">Address</span>    <span class="nt">HEX</span> <span class="nt">code</span>    <span class="nt">Reasoning</span>
+        <span class="nt">SJMP</span> <span class="nt">BLINKY</span>             <span class="o">;</span>    <span class="nt">0000H</span>      <span class="nt">800DH</span>       <span class="nt">80</span> <span class="nt">represents</span> <span class="nt">SJMP</span> <span class="nt">and</span> <span class="nt">0D</span> <span class="nt">is</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">BLINKY</span><span class="o">(</span><span class="nt">000FH</span><span class="o">)</span> <span class="nt">relative</span> <span class="nt">to</span> <span class="nt">PC</span><span class="o">(</span><span class="nt">0002H</span><span class="o">)</span>         
+
+<span class="nt">DELAY</span><span class="o">:</span>  <span class="nt">MOV</span> <span class="nt">R0</span><span class="o">,</span> <span class="p">#</span><span class="nn">08H</span>            <span class="o">;</span>    <span class="nt">0002H</span>      <span class="nt">7808H</span>       <span class="nt">78</span> <span class="nt">represents</span> <span class="nt">MOV</span> <span class="nt">R0</span> <span class="nt">and</span> <span class="nt">08</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">immediate</span> <span class="nt">operand</span> <span class="nt">08H</span>
+<span class="nt">DELAY2</span><span class="o">:</span> <span class="nt">MOV</span> <span class="nt">R1</span><span class="o">,</span> <span class="p">#</span><span class="nn">0FFH</span>           <span class="o">;</span>    <span class="nt">0004H</span>      <span class="nt">79FFH</span>       <span class="nt">79</span> <span class="nt">represents</span> <span class="nt">MOV</span> <span class="nt">R1</span> <span class="nt">and</span> <span class="nt">FF</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">immidiate</span> <span class="nt">operand</span> <span class="nt">FFH</span>
+<span class="nt">DELAY3</span><span class="o">:</span> <span class="nt">MOV</span> <span class="nt">R2</span><span class="o">,</span> <span class="p">#</span><span class="nn">0FFH</span>           <span class="o">;</span>    <span class="nt">0006H</span>      <span class="nt">7AFFH</span>       <span class="nt">7A</span> <span class="nt">represents</span> <span class="nt">MOV</span> <span class="nt">R1</span> <span class="nt">and</span> <span class="nt">FF</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">immidiate</span> <span class="nt">operand</span> <span class="nt">FFH</span>
+<span class="nt">AGAIN</span><span class="o">:</span>  <span class="nt">DJNZ</span> <span class="nt">R2</span><span class="o">,</span> <span class="nt">AGAIN</span>          <span class="o">;</span>    <span class="nt">0008H</span>      <span class="nt">DAFEH</span>       <span class="nt">DA</span> <span class="nt">represents</span> <span class="nt">DJNZ</span> <span class="nt">R2</span> <span class="nt">and</span> <span class="nt">FE</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">AGAIN</span><span class="o">(</span><span class="nt">0008H</span><span class="o">)</span> <span class="nt">relative</span> <span class="nt">to</span> <span class="nt">PC</span><span class="o">(</span><span class="nt">000AH</span><span class="o">)</span>
+        <span class="nt">DJNZ</span> <span class="nt">R1</span><span class="o">,</span> <span class="nt">DELAY3</span>         <span class="o">;</span>    <span class="nt">000AH</span>      <span class="nt">D9FAH</span>       <span class="nt">D9</span> <span class="nt">represents</span> <span class="nt">DJNZ</span> <span class="nt">R1</span> <span class="nt">and</span> <span class="nt">FA</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">DELAY3</span><span class="o">(</span><span class="nt">0006H</span><span class="o">)</span> <span class="nt">relative</span> <span class="nt">to</span> <span class="nt">PC</span><span class="o">(</span><span class="nt">000CH</span><span class="o">)</span>
+        <span class="nt">DJNZ</span> <span class="nt">R0</span><span class="o">,</span> <span class="nt">DELAY2</span>         <span class="o">;</span>    <span class="nt">000CH</span>      <span class="nt">D8F6H</span>       <span class="nt">D8</span> <span class="nt">represents</span> <span class="nt">DJNZ</span> <span class="nt">R0</span> <span class="nt">and</span> <span class="nt">F6</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">DELAY2</span><span class="o">(</span><span class="nt">0004H</span><span class="o">)</span> <span class="nt">relative</span> <span class="nt">to</span> <span class="nt">PC</span><span class="o">(</span><span class="nt">000EH</span><span class="o">)</span>
+        <span class="nt">RET</span>                     <span class="o">;</span>      <span class="nt">0EH</span>        <span class="nt">22H</span>       <span class="nt">PC</span> <span class="nt">is</span> <span class="nt">loaded</span> <span class="nt">with</span> <span class="nt">SP</span><span class="o">(</span><span class="nt">0011H</span><span class="o">)</span>
+
+<span class="nt">BLINKY</span><span class="o">:</span> <span class="nt">ACALL</span> <span class="nt">DELAY</span>             <span class="o">;</span>    <span class="nt">000FH</span>      <span class="nt">1102H</span>       <span class="nt">11</span> <span class="nt">represents</span> <span class="nt">ACALL</span> <span class="nt">and</span> <span class="nt">02</span> <span class="nt">represents</span> <span class="nt">the</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">DELAY</span><span class="o">(</span><span class="nt">0002H</span><span class="o">),</span> <span class="nt">SP</span> <span class="nt">is</span> <span class="nt">loaded</span> <span class="nt">with</span> <span class="nt">PC</span><span class="o">(</span><span class="nt">0011H</span><span class="o">)</span>
+        <span class="nt">CPL</span> <span class="nt">P1</span><span class="p">.</span><span class="nc">4</span>                <span class="o">;</span>    <span class="nt">0011H</span>      <span class="nt">B294H</span>       <span class="nt">B2</span> <span class="nt">represents</span> <span class="nt">CPL</span> <span class="nt">and</span> <span class="nt">94</span> <span class="nt">the</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">Port</span> <span class="nt">1</span> <span class="nt">bit</span> <span class="nt">5</span>
+        <span class="nt">SJMP</span> <span class="nt">BLINKY</span>             <span class="o">;</span>    <span class="nt">0013H</span>      <span class="nt">80FAH</span>       <span class="nt">80</span> <span class="nt">represents</span> <span class="nt">SJMP</span> <span class="nt">and</span> <span class="nt">FA</span> <span class="nt">represents</span> <span class="nt">the</span> <span class="nt">address</span> <span class="nt">of</span> <span class="nt">BLINKY</span><span class="o">(</span><span class="nt">000FH</span><span class="o">)</span> <span class="nt">relative</span> <span class="nt">to</span> <span class="nt">PC</span><span class="o">(</span><span class="nt">0015H</span><span class="o">)</span>
+
+
+<span class="nt">END</span>
+</pre></div>
+
+
+<p>The HEX file for the above program is as given below</p>
+<p><img alt="Photo" src="/images/hexFormat.png"></p>
+<p>I have marked the nibbles according to what they represent</p>
+<ol>
+<li>
+<p>Red nibbles represent the number of data bytes (black nibbles) in that line. </p>
+</li>
+<li>
+<p>Green nibbles represent a 2 byte address which indicates where that particular line is going to be written in the PROM of 8051</p>
+</li>
+<li>
+<p>Black nibbles represent the data. If you notice carefully, this matches the HEX code we wrote down </p>
+</li>
+<li>
+<p>Orange nibbles represent whether that particular line has data bytes or if its end of file. 00 = data bytes and 01 = end of file</p>
+</li>
+<li>
+<p>Blue nibbles represent the checksum for that line which is used to ensure integrity of the code burnt in</p>
+</li>
+</ol>
+<h3> Serial Peripheral Interface (SPI) </h3>
+
+<p>Now that we have seen the HEX file for our assembly program, it is this HEX file we are going to transfer to our 8051 byte by byte using SPI.
+SPI is a full duplex (simultaneous transmit and receive) synchronous communication protocol. The signals required for SPI to work are </p>
+<ol>
+<li>SCK (Serial Clock)</li>
+<li>MISO (Master In Slave Out)</li>
+<li>MOSI (Master Out Slave In)</li>
+<li>SS (Slave Select)</li>
+</ol>
+<p>SPI can have more than one slave but only one master.</p>
+<dl>
+<dt><h5> SCK </h5></dt>
+<dd>
+<p>The master is responsible for generating the serial clock. The maximum frequency/baud rate is dictated by both the master and slave's
+receive rate. For 8051, the max baud rate allowed is <span class="math">\(\frac{1}{16}\)</span>th of crystal frequency. Since our crystal frequency is 24Mhz, the max baud rate is 1.5MHz.
+The SCK is used to synchronize data transfers and initiate state changes in our FSM based SPI module.</p>
+</dd>
+<dt><h5> MISO </h5></dt>
+<dd>
+<p>MISO is the line on which the slave transmits data and the master receives data.</p>
+</dd>
+<dt><h5> MOSI </h5></dt>
+<dd>
+<p>MOSI is the line on which the master transmits data and the slave receives data.</p>
+</dd>
+<dt><h5> SS </h5></dt>
+<dd>
+<p>Since SPI can have more than one slave, the SS is used to select a particular slave for communication. Since we are interested in using SPI for burning programs, we will
+be dealing with a single slave and hence this signal is not relevant for us.</p>
+</dd>
+</dl>
+<p>The transmit FSM</p>
+<p><img src="/images/fsmTransmit.jpg" width="800" height="600" /></p>
+<p>and the receive FSM</p>
+<p><img src="/images/fsmReceive.jpg" width="800" height="600" /></p>
+<p>The behavioural simulation of the verilog module is as follows</p>
+<p><img src="/images/spiTransfer.png" width="800" height="400" /></p>
+<ol>
+<li>SSPTXD is our MOSI</li>
+<li>SSPCLKOUT is our SCK</li>
+<li>PSEL is our SS</li>
+</ol>
+<p>Since PCLK is faster than SSPCLKOUT, I have added a FIFO buffer in the transmit module to prevent data loss. The FIFO
+buffer depth can be varied. The SSPTXINTR signal indicates that the FIFO buffer is full and hence anymore data sent
+to the transmit module to be written will be lost. PWDATA is the data to be written/sent whereas CLEAR_B is our reset
+signal.</p>
+<p><a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module">Github Link to the SPI/SSP verilog module</a></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+    </article>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Blog powered by <a href="http://getpelican.com">Pelican</a>,
+                which takes great advantage of <a href="http://python.org">Python</a>.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/theme/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

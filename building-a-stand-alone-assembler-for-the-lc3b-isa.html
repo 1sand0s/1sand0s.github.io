@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+
+        <title>Corner House at UT</title>
+
+
+        <!-- Bootstrap Core CSS -->
+        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+
+        <meta name="tags" contents="LC3b" />
+        <meta name="tags" contents="C" />
+
+
+			<meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Corner House at UT">
+
+	<meta property="og:type" content="article">
+	<meta property="article:author" content="">
+	<meta property="og:url" content="/building-a-stand-alone-assembler-for-the-lc3b-isa.html">
+	<meta property="og:title" content="Building a stand-alone Assembler for the LC3b ISA">
+	<meta property="og:description" content="">
+	<meta property="og:image" content="/">
+	<meta property="article:published_time" content="2020-01-06 19:11:00-06:00">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Corner House at UT</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Building a stand-alone Assembler for the LC3b ISA</h1>
+                        <span class="meta">Posted by
+                                <a href="/author/auditt.html">AudiTT</a>
+                             on Mon 06 January 2020
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>This post details how to build an assembler in general but we'll take a look at the Lc3b ISA. </p>
+<h3> What is an Assembler </h3>
+
+<p>A computer program is essentially a sequence of instructions used to instruct the computer to perform a certain task. Since computers are built using digital logic blocks implemented through
+CMOS technology, they can only understand 1's and 0's and therefore we need to remove all the layers of abstraction from a program before the computer can understand it. </p>
+<h5> What is Abstraction </h5>
+
+<p>Abstraction of a subject refers to the concept of exposing only the absolute essential traits or aspects of that subject that would allow a user to exploit its usefulness despite being
+potentially ignorant of its underlying complexity. For instance, the entire mechanism of driving a car is reduced to being able to operate the steering wheel, the stick shift, the brake pad 
+and the acceleration pad etc through abstraction without requiring the need to understand the complexity of the underlying parts such as the engine. It would not be an exaggeration to
+claim that the world runs on abstraction. Every product we use, every product a company is hoping to market requires abstraction for it to be useful. </p>
+<p>Similarly, programming languages abstract away all the complexities associated with programming directly in the machine language. However, since the computer can only understand machine language,
+ we need to remove this abstraction. The tool that removes the abstraction from an assembly language and thereby translating it to the logic equivalent machine language is called an assembler. </p>
+<p><img alt="thumbnail" height="350px" src="/assemblerAbstraction.png"></p>
+<p>In the figure above, we have a simple assembly program (ASM code) to add -1(Base 10) to the contents of the register R0 and store it in R0. The logic equivalent machine code is shown
+on the right. The binary sequence has been written in Base 16 to improve readability. Some of the major functions of an assembler include</p>
+<ol>
+<li>Correctly translate ASM code to its logic equivalent machine code</li>
+<li>Detect errors in the ASM code if any and output the appropriate error code </li>
+</ol>
+<h3> Structure of LC3b Assembly Language and Program </h3>
+
+<p>Every program written in LC3b assembly language has the following template</p>
+<div class="highlight"><pre><span></span><span class="err">    .ORIG Operand ; Operand is an even address</span>
+<span class="err">        .</span>
+<span class="err">        .</span>
+<span class="err">        .</span>
+<span class="err">    Instruction/Directive Operands</span>
+<span class="err">        .</span>
+<span class="err">        .</span>
+<span class="err">        .</span>
+<span class="err">    .END</span>
+</pre></div>
+
+
+<p>The .ORIG directive indicates the start of the program and the .END directive indicates the end. The .ORIG directive takes an even addres as an operand and indicates the address where the first
+2 bytes of the program is stored. As stated before, the assembler's job is to translate the ASM code into machine code whilst also detecting any errors. Seems like an FSM based implementation
+would be ideal for this task since by definition of the language specifications, we know all the possible errors an LC3b assembly program can generate which can be used to trigger transitions
+into an error state in the FSM statespace. For instance, two .ORIG directives is illegal, odd operand to .ORIG is illegal, operand to .ORIG has to be a valid address whereas two .END is allowed
+and despite .END not taking an operand, it is not illegal since anything following .END is strictly speaking not part of the program. Therefore, just considering the opening and closing
+directives we can setup the following FSM to vet a program.</p>
+<p><img alt="thumbnail" height="350px" src="/fsmHigh.png"></p>
+<p><img alt="Photo" src="/fsmHigh.png"></p>
+<p><img alt="Photo" src="/assemblerAbstraction.png"></p>
+<p><a href="https://github.com/1sand0s/Lc3B-Assembler">Github Link to the LC3b Assembler</a></p>
+    </article>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Blog powered by <a href="http://getpelican.com">Pelican</a>,
+                which takes great advantage of <a href="http://python.org">Python</a>.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/theme/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
