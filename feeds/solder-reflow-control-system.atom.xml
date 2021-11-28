@@ -4,5 +4,6 @@ had to limit myself to using IC packages with extended leads due to lack of a wa
 soldering them, I decided on building a Solder Reflow Oven 2.0 !&lt;/p&gt;
 &lt;p&gt;The first version was built around an AT90USB646, it worked fine but it used a separate
 12V dc adapter to power the board. This time around I wanted to power the board and the
-reflow oven from the mains and also add some TFT LCD tech to make it more rad!! Well, 
-thats all the motivation/excuse I needed to build Solder Reflow Oven 2.0&lt;/p&gt;</content><category term="PID Control System"></category></entry></feed>
+reflow oven from the mains and also add some TFT LCD tech to make it more rad!! This version uses
+an STM32L053 mcu based on ARM Cortex M0+. Well, thats all the motivation/excuse I needed to build Solder Reflow Oven 2.0&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/SolderReflow_3D.png" width="800" height="600" /&gt;&lt;/p&gt;</content><category term="PID Control System"></category></entry></feed>
