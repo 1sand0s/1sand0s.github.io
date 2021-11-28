@@ -1,5 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2019-12-06T19:11:00-06:00</updated><entry><title>Designing SPI Master and Slave in Verilog (Synthesizable)</title><link href="/designing-spi-master-and-slave-in-verilog-synthesizable.html" rel="alternate"></link><published>2019-12-06T19:11:00-06:00</published><updated>2019-12-06T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2019-12-06:/designing-spi-master-and-slave-in-verilog-synthesizable.html</id><summary type="html">&lt;p&gt;This post details how to design an SPI Master and Slave using Verilog. The design is implemented using FSM.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the previous post, we had a look at designing a general purpose board based on the popular AT89S51 MCU. We took advantage of the fact
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2021-11-24T19:11:00-06:00</updated><entry><title>Solder Reflow Oven 2.0</title><link href="/solder-reflow-oven-20.html" rel="alternate"></link><published>2021-11-24T19:11:00-06:00</published><updated>2021-11-24T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-24:/solder-reflow-oven-20.html</id><summary type="html">&lt;p&gt;This post details how to build a Solder Reflow Oven controller based on PID&lt;/p&gt;</summary><content type="html">&lt;p&gt;Found some time to work on hobby projects for thanksgiving break and seeing that I 
+had to limit myself to using IC packages with extended leads due to lack of a way to 
+soldering them, I decided on building a Solder Reflow Oven 2.0 !&lt;/p&gt;
+&lt;p&gt;The first version was built around an AT90USB646, it worked fine but it used a separate
+12V dc adapter to power the board. This time around I wanted to power the board and the
+reflow oven from the mains and also add some TFT LCD tech to make it more rad!! Well, 
+thats all the motivation/excuse I needed to build Solder Reflow Oven 2.0&lt;/p&gt;</content><category term="PID Control System"></category></entry><entry><title>Building an S-Band Radar</title><link href="/building-an-s-band-radar.html" rel="alternate"></link><published>2021-11-06T19:11:00-05:00</published><updated>2021-11-06T19:11:00-05:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-06:/building-an-s-band-radar.html</id><summary type="html">&lt;p&gt;This post details how to build an  S-Band Ground Penetrating Radar&lt;/p&gt;</summary><content type="html">&lt;p&gt;This post details my second and perhaps a more in-depth attempt at building an S-Band Ground Penetrating Radar. So lets jump right in ! &lt;/p&gt;
+&lt;h3&gt; What is the S-Band and why choose it ? &lt;/h3&gt;
+
+&lt;p&gt;Electromagnetic waves are capable of existing with various frequencies and this entire range of frequency is called a spectrum. EM waves have been harnesed to serve
+several different purposes, from Communication to Remote Sensing and down to heating our foods ! We certainly cannot have someone microwaving their broccoli jeopardising
+the radio communication with a space shuttle for instance. Hence, to maximize the potential of EM wave utility, we need to &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Allocate certaing range of frequencies called bands for specific operations&lt;/li&gt;
+&lt;li&gt;Share the band by following the max transmit power statutes  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The establishment of such laws and regulations gives the governing body a legal basis to prosecute any malfeasance while simultaneously preventing interference amongst users.
+The laws and regulations concerning the allocation and usage of the EM spectrum in the United States is set by the FCC. The S-Band is one such range of frequencies covering
+2-4GHz. Operations such as Satellite Communciations, WiFi and microwave ovens etc utilize this band. In this project, we restrict ourselves to the ISM band 2.4 - 2.4835GHz
+portion of the S-Band.&lt;/p&gt;
+&lt;p&gt;In summary:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We operate in the ISM band of the S-Band 2.4-2.4835GHz&lt;/li&gt;
+&lt;li&gt;Mass production of commercial devices for Wifi applications utilizing this band helps reduce the cost of our build&lt;/li&gt;
+&lt;li&gt;Does not require licensing from FCC as long as we abide by the rules in &amp;sect; 15.249 of Title 47 of Code of Federal Regulations    &lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt; Functional Diagram &lt;/h3&gt;
+
+&lt;p&gt;&lt;img alt="thumbnail" height="450px" src="/blockDiagram.png"&gt;&lt;/p&gt;
+&lt;p&gt;The functional diagram of our build is presented above. All images used are representational and attributions to the respective authors can be found at the bottom of this page.
+At the highest level of abstraction, our GPR is made up of the PC, GPR controller board and the transmit and receive antennas. &lt;/p&gt;
+&lt;p&gt;Functions of the PC&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Upload firmware to the GPR controller MCU&lt;/li&gt;
+&lt;li&gt;Obtain data from GPR controller MCU for analysis&lt;/li&gt;
+&lt;li&gt;Supply power to the GPR controller&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Functions of the GPR Controller Board&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Digitize the range information and transfer it to the PC&lt;/li&gt;
+&lt;li&gt;Generate an FMCW sweep/chirp of desired frequency range and resolution&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Functions of the Antenna&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Transmit the FMCW signal from the GPR controller board&lt;/li&gt;
+&lt;li&gt;Receive the reflected signal and transfer it to the GPR controller board&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt; GPR Controller Board &lt;/h3&gt;
+
+&lt;p&gt;The major constraint in choosing the parts for the board is packaging of the IC. Since I don't have a solder reflow oven, I cannot solder packages without leads.&lt;/p&gt;
+&lt;h4&gt; USB to UART/SPI &lt;/h4&gt;
+
+&lt;p&gt;MCP2210
+&lt;h4&gt; DSP Microcontroller &lt;/h4&gt;
+&lt;h4&gt; Fractional N PLL &lt;/h4&gt;
+&lt;h4&gt; VCO &lt;/h4&gt;
+&lt;h4&gt; Loop Filter &lt;/h4&gt;
+&lt;h4&gt; Reference Oscillator &lt;/h4&gt;
+&lt;h4&gt; Power Divider &lt;/h4&gt;
+&lt;h4&gt; LNA &lt;/h4&gt;
+&lt;h4&gt; Mixer &lt;/h4&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/Lc3B-Assembler"&gt;Github Link to the LC3b Assembler&lt;/a&gt;&lt;/p&gt;</content><category term="FMCW"></category></entry><entry><title>Building a stand-alone Assembler for the LC3b ISA</title><link href="/building-a-stand-alone-assembler-for-the-lc3b-isa.html" rel="alternate"></link><published>2020-01-06T19:11:00-06:00</published><updated>2020-01-06T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2020-01-06:/building-a-stand-alone-assembler-for-the-lc3b-isa.html</id><summary type="html">&lt;p&gt;This post details how to build an assembler for the LC3b ISA. First of many assemblers to come, so stay tuned&lt;/p&gt;</summary><content type="html">&lt;p&gt;This post details how to build an assembler in general but we'll take a look at the Lc3b ISA. &lt;/p&gt;
+&lt;h3&gt; What is an Assembler &lt;/h3&gt;
+
+&lt;p&gt;A computer program is essentially a sequence of instructions used to instruct the computer to perform a certain task. Since computers are built using digital logic blocks implemented through
+CMOS technology, they can only understand 1's and 0's and therefore we need to remove all the layers of abstraction from a program before the computer can understand it. &lt;/p&gt;
+&lt;h5&gt; What is Abstraction &lt;/h5&gt;
+
+&lt;p&gt;Abstraction of a subject refers to the concept of exposing only the absolute essential traits or aspects of that subject that would allow a user to exploit its usefulness despite being
+potentially ignorant of its underlying complexity. For instance, the entire mechanism of driving a car is reduced to being able to operate the steering wheel, the stick shift, the brake pad 
+and the acceleration pad etc through abstraction without requiring the need to understand the complexity of the underlying parts such as the engine. It would not be an exaggeration to
+claim that the world runs on abstraction. Every product we use, every product a company is hoping to market requires abstraction for it to be useful. &lt;/p&gt;
+&lt;p&gt;Similarly, programming languages abstract away all the complexities associated with programming directly in the machine language. However, since the computer can only understand machine language,
+ we need to remove this abstraction. The tool that removes the abstraction from an assembly language and thereby translating it to the logic equivalent machine language is called an assembler. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="thumbnail" height="350px" src="/assemblerAbstraction.png"&gt;&lt;/p&gt;
+&lt;p&gt;In the figure above, we have a simple assembly program (ASM code) to add -1(Base 10) to the contents of the register R0 and store it in R0. The logic equivalent machine code is shown
+on the right. The binary sequence has been written in Base 16 to improve readability. Some of the major functions of an assembler include&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Correctly translate ASM code to its logic equivalent machine code&lt;/li&gt;
+&lt;li&gt;Detect errors in the ASM code if any and output the appropriate error code &lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt; Structure of LC3b Assembly Language and Program &lt;/h3&gt;
+
+&lt;p&gt;Every program written in LC3b assembly language has the following template&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    .ORIG Operand ; Operand is an even address
+        .
+        .
+        .
+    Instruction/Directive Operands
+        .
+        .
+        .
+    .END
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The .ORIG directive indicates the start of the program and the .END directive indicates the end. The .ORIG directive takes an even addres as an operand and indicates the address where the first
+2 bytes of the program is stored. As stated before, the assembler's job is to translate the ASM code into machine code whilst also detecting any errors. Seems like an FSM based implementation
+would be ideal for this task since by definition of the language specifications, we know all the possible errors an LC3b assembly program can generate which can be used to trigger transitions
+into an error state in the FSM statespace. For instance, two .ORIG directives is illegal, odd operand to .ORIG is illegal, operand to .ORIG has to be a valid address whereas two .END is allowed
+and despite .END not taking an operand, it is not illegal since anything following .END is strictly speaking not part of the program. Therefore, just considering the opening and closing
+directives we can setup the following FSM to vet a program.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="thumbnail" height="350px" src="/fsmHigh.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/fsmHigh.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/assemblerAbstraction.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/Lc3B-Assembler"&gt;Github Link to the LC3b Assembler&lt;/a&gt;&lt;/p&gt;</content><category term="LC3b"></category><category term="C"></category></entry><entry><title>Designing SPI Master and Slave in Verilog (Synthesizable)</title><link href="/designing-spi-master-and-slave-in-verilog-synthesizable.html" rel="alternate"></link><published>2019-12-06T19:11:00-06:00</published><updated>2019-12-06T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2019-12-06:/designing-spi-master-and-slave-in-verilog-synthesizable.html</id><summary type="html">&lt;p&gt;This post details how to design an SPI Master and Slave using Verilog. The design is implemented using FSM.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the previous post, we had a look at designing a general purpose board based on the popular AT89S51 MCU. We took advantage of the fact
 that the &lt;strong&gt;S&lt;/strong&gt; variant of Atmel's 8051 series allows ISP(In-System programming) and hence we used an Arduino as the in-system programmer to 
 burn code onto our board by means of the protocol SPI (Serial Peripheral Interface). In this post, I would like to detail what SPI is, how can
 one design it in HDL(Hardware descriptive language) and upload our SPI module onto an FPGA and use that to program our 8051 board.&lt;/p&gt;
@@ -87,7 +192,7 @@ SPI is a full duplex (simultaneous transmit and receive) synchronous communicati
 &lt;dt&gt;&lt;h5&gt; SCK &lt;/h5&gt;&lt;/dt&gt;
 &lt;dd&gt;
 &lt;p&gt;The master is responsible for generating the serial clock. The maximum frequency/baud rate is dictated by both the master and slave's
-receive rate. For 8051, the max baud rate allowed is &lt;span class="math"&gt;\(\frac{1}{16}\)&lt;/span&gt;th of crystal frequency. Since our crystal frequency is 24Mhz, the max baud rate is 1.5MHz.
+receive rate. For 8051, the max baud rate allowed is $\frac{1}{16}$th of crystal frequency. Since our crystal frequency is 24Mhz, the max baud rate is 1.5MHz.
 The SCK is used to synchronize data transfers and initiate state changes in our FSM based SPI module.&lt;/p&gt;
 &lt;/dd&gt;
 &lt;dt&gt;&lt;h5&gt; MISO &lt;/h5&gt;&lt;/dt&gt;
@@ -119,64 +224,7 @@ be dealing with a single slave and hence this signal is not relevant for us.&lt;
 buffer depth can be varied. The SSPTXINTR signal indicates that the FIFO buffer is full and hence anymore data sent
 to the transmit module to be written will be lost. PWDATA is the data to be written/sent whereas CLEAR_B is our reset
 signal.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module"&gt;Github Link to the SPI/SSP verilog module&lt;/a&gt;&lt;/p&gt;
-&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width &lt; 768) ? "left" : align;
-        indent = (screen.width &lt; 768) ? "0em" : indent;
-        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-&lt;/script&gt;</content><category term="Verilog"></category><category term="SPI"></category><category term="Serial Interface"></category></entry><entry><title>Make your own 8051(AT89S51) Board</title><link href="/make-your-own-8051at89s51-board.html" rel="alternate"></link><published>2019-12-04T19:11:00-06:00</published><updated>2019-12-04T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2019-12-04:/make-your-own-8051at89s51-board.html</id><summary type="html">&lt;p&gt;This post talks about designing a general purpose board based on the 8051 microcontroller.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had a week off for thanksgiving and thought it was worth the time to start designing some basic general puprose MCU boards
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module"&gt;Github Link to the SPI/SSP verilog module&lt;/a&gt;&lt;/p&gt;</content><category term="SPI"></category><category term="Serial Interface"></category></entry><entry><title>Make your own 8051(AT89S51) Board</title><link href="/make-your-own-8051at89s51-board.html" rel="alternate"></link><published>2019-12-04T19:11:00-06:00</published><updated>2019-12-04T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2019-12-04:/make-your-own-8051at89s51-board.html</id><summary type="html">&lt;p&gt;Short version of my first blog post&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had a week off for thanksgiving and thought it was worth the time to start designing some basic general puprose MCU boards
 to build upon for more complex projects later on.&lt;/p&gt;
 &lt;p&gt;The AT89S51 based off of Intel's famous MCS-51 instruction set is an 8-bit CISC microcontroller. Its fairly simple and so I
 though of beginning my blog by detailing how to design a general purpose board centred on arguably its most popular variant 
@@ -185,28 +233,28 @@ AT89S51 (there are other variants supplied by Zilog, Philips etc).&lt;/p&gt;
 than &lt;strong&gt;AT89C51&lt;/strong&gt; since the &lt;strong&gt;S&lt;/strong&gt; variant offers in-system programming (ISP) and hence allowing SPI and other protocols to be used 
 to program the MCU without needing a dedicated programmer. &lt;/p&gt;
 &lt;p&gt;The Kicad schematic for the board is explained below&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/images/PowerSupply.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/PowerSupply.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;The power supply for the MCU is made up of a voltage regulator &lt;strong&gt;MC78L05&lt;/strong&gt; which is capable of outputting 5V DC from an input
 of 5V to 15V DC. I have added an additional 330uF bulk decoupling capacitor in case the MCU draws too much current during which
 the low frequency ripple in the power supply line will be reduced by the bulk decoupling capacitor. Presently however, I haven't
 found the need yet to include it but just in case.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/images/Crystal.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/Crystal.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;The oscilltor is the usual &lt;strong&gt;Pierce-type oscillator&lt;/strong&gt; employing a standard 24Mhz crystal from Abracon (through hole). The Abracon crystal
-oscillator has a load capacitance of 18pF and hence the caps(&lt;span class="math"&gt;\(C_p\)&lt;/span&gt;) employed to match this impedance is given by the formula
-&lt;span class="math"&gt;\(C_p = 2 * C_L - 2 * C_{stray}\)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;I have ignored &lt;span class="math"&gt;\(C_{stray}\)&lt;/span&gt; the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/images/TestLED.PNG"&gt;&lt;/p&gt;
+oscillator has a load capacitance of 18pF and hence the caps($C_p$) employed to match this impedance is given by the formula
+$C_p = 2 * C_L - 2 * C_{stray}$&lt;/p&gt;
+&lt;p&gt;I have ignored $C_{stray}$ the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/TestLED.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;As is customary, the Hello World equivalent of a hardware project is the LED blink test. D1 is the Power status LED whereas D2 is the test LED
 and is connected to the fifth pin of Port 1. Before programming, the RST should be pulled high for 2 machine cycles to reset the MCU. To perform
 this reset quickly, I have added a pushbutton SPST between RST and VCC.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Photo" src="/images/MCU.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/MCU.PNG"&gt;&lt;/p&gt;
 &lt;p&gt;The only interesting thing mentioning in MCU schematic is that the bypass capacitor 0.1uF has to be placed as close as possible to the VCC supply
 pin of the MCU to ensure that the shortest path is available for the high frequency currents(ripples) to flow back to the source.
 Essentially it decreases the parasitic inductance by reducing the loop area.&lt;/p&gt;
 &lt;p&gt;The Unsoldered and the Soldered boards : Kudos to OSHPark &lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/UnSoldered.jpg" width="700" height="700" /&gt;    &lt;img src="/images/Soldered.jpg" width="700" height="700" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="UnSoldered.jpg" width="700" height="700" /&gt;    &lt;img src="Soldered.jpg" width="700" height="700" /&gt;&lt;/p&gt;
 &lt;p&gt;Lets take a quick look at the blink test before heading onto the programming intracacies.&lt;/p&gt;
-&lt;iframe src="//www.youtube.com/embed/fNMvQsAE2kg"
+&lt;iframe src="http://www.youtube.com/embed/fNMvQsAE2kg"
    width="600" height="400" frameborder="0" allowfullscreen&gt;
 &lt;/iframe&gt;
 
@@ -227,7 +275,7 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
 &lt;p&gt;Connect SCK of Arduino to SCK of the 8051 board&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;The maximum baud rate allowed is equal to &lt;span class="math"&gt;\(\frac{8051 Crystal Frequency}{16}\)&lt;/span&gt;. I usually use 19200&lt;/p&gt;
+&lt;p&gt;The maximum baud rate allowed is equal to $\frac{8051 Crystal Frequency}{16}$. I usually use 19200&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;To simplify the avrdude upload process I have written a powershell script(runs only on Windows but can easily be ported).&lt;/p&gt;
@@ -241,14 +289,14 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Proceed to the directory where your HEX file is present and upload it using powershell by executing the command &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;                                      bootloader.ps1 COM3 19200 your_hex_file.hex&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;                                      bootloader.ps1 COM3 19200 your_hex_file.hex
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Detailed procedure can be found by executing the command&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;                                      bootloader.ps1 -h&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;                                      bootloader.ps1 -h
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -258,61 +306,4 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
     ROM.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board"&gt;Github Link to the Powershell Scripts and Kicad Project&lt;/a&gt;&lt;/p&gt;
-&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width &lt; 768) ? "left" : align;
-        indent = (screen.width &lt; 768) ? "0em" : indent;
-        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-&lt;/script&gt;</content><category term="Custom MCU Board"></category><category term="AT89S51"></category><category term="8051 Board"></category></entry></feed>
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board"&gt;Github Link to the Powershell Scripts and Kicad Project&lt;/a&gt;&lt;/p&gt;</content><category term="AT89S51"></category><category term="8051 Board"></category></entry></feed>

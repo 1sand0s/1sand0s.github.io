@@ -87,7 +87,7 @@ SPI is a full duplex (simultaneous transmit and receive) synchronous communicati
 &lt;dt&gt;&lt;h5&gt; SCK &lt;/h5&gt;&lt;/dt&gt;
 &lt;dd&gt;
 &lt;p&gt;The master is responsible for generating the serial clock. The maximum frequency/baud rate is dictated by both the master and slave's
-receive rate. For 8051, the max baud rate allowed is &lt;span class="math"&gt;\(\frac{1}{16}\)&lt;/span&gt;th of crystal frequency. Since our crystal frequency is 24Mhz, the max baud rate is 1.5MHz.
+receive rate. For 8051, the max baud rate allowed is $\frac{1}{16}$th of crystal frequency. Since our crystal frequency is 24Mhz, the max baud rate is 1.5MHz.
 The SCK is used to synchronize data transfers and initiate state changes in our FSM based SPI module.&lt;/p&gt;
 &lt;/dd&gt;
 &lt;dt&gt;&lt;h5&gt; MISO &lt;/h5&gt;&lt;/dt&gt;
@@ -119,61 +119,4 @@ be dealing with a single slave and hence this signal is not relevant for us.&lt;
 buffer depth can be varied. The SSPTXINTR signal indicates that the FIFO buffer is full and hence anymore data sent
 to the transmit module to be written will be lost. PWDATA is the data to be written/sent whereas CLEAR_B is our reset
 signal.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module"&gt;Github Link to the SPI/SSP verilog module&lt;/a&gt;&lt;/p&gt;
-&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width &lt; 768) ? "left" : align;
-        indent = (screen.width &lt; 768) ? "0em" : indent;
-        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-&lt;/script&gt;</content><category term="Verilog"></category><category term="SPI"></category><category term="Serial Interface"></category></entry></feed>
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/SSP-Master-and-Slave-Verilog-Module"&gt;Github Link to the SPI/SSP verilog module&lt;/a&gt;&lt;/p&gt;</content><category term="SPI"></category><category term="Serial Interface"></category></entry></feed>

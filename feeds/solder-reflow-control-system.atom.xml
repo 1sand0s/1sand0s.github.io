@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Solder Reflow, Control System</title><link href="/" rel="alternate"></link><link href="/feeds/solder-reflow-control-system.atom.xml" rel="self"></link><id>/</id><updated>2021-11-24T19:11:00-06:00</updated><entry><title>Solder Reflow Oven 2.0</title><link href="/solder-reflow-oven-20.html" rel="alternate"></link><published>2021-11-24T19:11:00-06:00</published><updated>2021-11-24T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-24:/solder-reflow-oven-20.html</id><summary type="html">&lt;p&gt;This post details how to build a Solder Reflow Oven controller based on PID&lt;/p&gt;</summary><content type="html">&lt;p&gt;Found some time to work on hobby projects for thanksgiving break and seeing that I 
+had to limit myself to using IC packages with extended leads due to lack of a way to 
+soldering them, I decided on building a Solder Reflow Oven 2.0 !&lt;/p&gt;
+&lt;p&gt;The first version was built around an AT90USB646, it worked fine but it used a separate
+12V dc adapter to power the board. This time around I wanted to power the board and the
+reflow oven from the mains and also add some TFT LCD tech to make it more rad!! Well, 
+thats all the motivation/excuse I needed to build Solder Reflow Oven 2.0&lt;/p&gt;</content><category term="PID Control System"></category></entry></feed>
