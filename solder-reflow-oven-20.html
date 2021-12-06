@@ -120,6 +120,9 @@ an STM32L053 mcu based on ARM Cortex M0+. Well, thats all the motivation/excuse 
 an AC to DC (3.3V) stage. The stage consists of a rectifier implemented using a diode-bridge, before rectifying I step down the voltage from 115V to
 24V so that I can use components (diodes, capacitors) rated at lower voltages which makes the entire build cheaper.  </p>
 <p><img src="/images/powerStage.png" width="800" height="600" /></p>
+<p>On applying the stepped down AC to the diode bridge, we obtain a pulsating DC at the output. To smooth this pulsating DC we can use a large capacitor. Once
+the capacitor fully charges to peak pulsating DC, it can practically supply charge with minimal drop in its voltage till it charges again. This helps remove
+ripple and produce a constant DC voltage. </p>
 <h3> Bill of Materials </h3>
 
 <table>
