@@ -12,6 +12,7 @@ an STM32L053 mcu based on ARM Cortex M0+. Well, thats all the motivation/excuse 
 &lt;p&gt;I did not want to deal with multiple wires coming in and out of the oven so I decided to power the board from the mains. This meant incorporating
 an AC to DC (3.3V) stage. The stage consists of a rectifier implemented using a diode-bridge, before rectifying I step down the voltage from 115V to
 24V so that I can use components (diodes, capacitors) rated at lower voltages which makes the entire build cheaper.  &lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/powerStage.png" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
