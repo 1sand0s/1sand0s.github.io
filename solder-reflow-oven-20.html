@@ -123,6 +123,11 @@ an AC to DC (3.3V) stage. The stage consists of a rectifier implemented using a 
 <p>On applying the stepped down AC to the diode bridge, we obtain a pulsating DC at the output. To smooth this pulsating DC we can use a large capacitor. Once
 the capacitor fully charges to peak value of the pulsating DC, it can practically supply charge with minimal drop in its voltage till it charges again. This helps remove
 ripple and produce a constant DC voltage. The output of the ripple smoothing capacitor is then input to a 10V regulator to obtain a 10V stable output.</p>
+<p><img src="/images/R2R_3_3V.png" width="800" height="600" /></p>
+<p>I then use a R2R divider to obtain 3.3V from the 10V rectifier output. Although this is not the most efficient way to do it, this isn't much of a problem at low 
+voltages or power. We would have needed a buck converter if the power involved was higher to improve efficiency of the conversion from 10V to 3.3V.</p>
+<h3> Crystal Layout </h3>
+
 <h3> Bill of Materials </h3>
 
 <table>
