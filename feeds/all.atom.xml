@@ -44,7 +44,7 @@ Instead, I use an NPN bjt to drive the relay while controlling it with the mcu. 
 &lt;p&gt;&lt;img src="/images/relayControl.png" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;p&gt;I bias the NPN such that it operates in either cut-off or saturation. Cut-off is easy, we just make Vbe 0. To drive it into saturation we need to ensure that Vce
 is driven into saturation, from the datasheet for 2SD1805 we see that the typical value for Vce,sat is 0.22V. Therefore, we need to choose Rc such that Vce is Vce,sat when Ic is 15mA. Hence, Rc = (10-Vce,sat)/Ic = (10-0.22)/0.015 = 652 Ohms. I use 653 Ohms for Rc. Since Ic is independent of beta in saturation, we can choose
- Ib independent of Ic as long as its sufficient to make Vbe &amp;gt; 0.7V (turn on base-emitter junction). I chose Ib to be 10mA from which I calculate Rb = (3.3V - Vbe)/Ib = (3.3 - 0.7)/0.01 = 2660 Ohms. I therefore, use 260 Ohms for Rb.&lt;/p&gt;
+ Ib independent of Ic as long as its sufficient to make Vbe &amp;gt; 0.7V (turn on base-emitter junction). I chose Ib to be 10mA from which I calculate Rb = (3.3V - Vbe)/Ib = (3.3 - 0.7)/0.01 = 260 Ohms. I therefore, use 260 Ohms for Rb.&lt;/p&gt;
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
