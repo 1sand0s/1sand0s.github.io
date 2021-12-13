@@ -21,6 +21,22 @@ ripple and produce a constant DC voltage. The output of the ripple smoothing cap
 voltages or power. We would have needed a buck converter if the power involved was higher to improve efficiency of the conversion from 10V to 3.3V.&lt;/p&gt;
 &lt;h3&gt; Crystal Layout &lt;/h3&gt;
 
+&lt;p&gt;The crystal oscilator unit perhaps contains the highest frequency signals (24MHz) in our board. For this reason we must take care in routing and placing it in such 
+a way that it doesn't couple onto nearby traces nor it get affected due to noise in nearby traces. Capacitive and inductive coupling are inevitable when traces are 
+routed in close proximity to each other, however, we can decrease the extent of such coupling by following certain guidelines during route and placing. Capacitive 
+coupling primarily depends on :&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Overlap area - long sections of parallel traces increases capacitive coupling (more noise)&lt;/li&gt;
+&lt;li&gt;Distance to ground plane - large distance between signal and ground plane increases capacitive coupling (more noise)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="/images/crystalLayout.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;In the above layout, the highlighted components and traces correspond to the crystal unit. By restricting other signal traces and copper pour around my crystal unit 
+I can reduce the overlap area (see above points) and thereby reduce capacitive coupling. Distance to ground plane is reduced by opting for a 4-layer board but I 
+think this layout should be sufficient for the frequencies I am working at and should work without any issues with a 2-layer board.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/crystalLayoutB.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;I also use a local ground plane for the crystal unit and tie it to the global ground at a single point. This prevents any other high frequency return currents from
+flowing under the crystal unit (this is due to increase in inductance due to larger loop area that these return currents would have to take if they flowed under 
+the crystal unit's local ground). This further improves the integrity of all signals involved in our crystal unit. &lt;/p&gt;
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
