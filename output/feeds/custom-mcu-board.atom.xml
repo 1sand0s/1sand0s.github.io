@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Custom MCU Board</title><link href="/" rel="alternate"></link><link href="/feeds/custom-mcu-board.atom.xml" rel="self"></link><id>/</id><updated>2019-12-04T19:11:00-06:00</updated><entry><title>Make your own 8051(AT89S51) Board</title><link href="/make-your-own-8051at89s51-board.html" rel="alternate"></link><published>2019-12-04T19:11:00-06:00</published><updated>2019-12-04T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2019-12-04:/make-your-own-8051at89s51-board.html</id><summary type="html">&lt;p&gt;Short version of my first blog post&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had a week off for thanksgiving and thought it was worth the time to start designing some basic general puprose MCU boards
+to build upon for more complex projects later on.&lt;/p&gt;
+&lt;p&gt;The AT89S51 based off of Intel's famous MCS-51 instruction set is an 8-bit CISC microcontroller. Its fairly simple and so I
+though of beginning my blog by detailing how to design a general purpose board centred on arguably its most popular variant 
+AT89S51 (there are other variants supplied by Zilog, Philips etc).&lt;/p&gt;
+&lt;p&gt;Its important that if you choose to use an 8051 from Atmel (Microchip) in your design that you go for the &lt;strong&gt;AT89S51&lt;/strong&gt; rather
+than &lt;strong&gt;AT89C51&lt;/strong&gt; since the &lt;strong&gt;S&lt;/strong&gt; variant offers in-system programming (ISP) and hence allowing SPI and other protocols to be used 
+to program the MCU without needing a dedicated programmer. &lt;/p&gt;
+&lt;p&gt;The Kicad schematic for the board is explained below&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/PowerSupply.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;The power supply for the MCU is made up of a voltage regulator &lt;strong&gt;MC78L05&lt;/strong&gt; which is capable of outputting 5V DC from an input
+of 5V to 15V DC. I have added an additional 330uF bulk decoupling capacitor in case the MCU draws too much current during which
+the low frequency ripple in the power supply line will be reduced by the bulk decoupling capacitor. Presently however, I haven't
+found the need yet to include it but just in case.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/Crystal.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;The oscilltor is the usual &lt;strong&gt;Pierce-type oscillator&lt;/strong&gt; employing a standard 24Mhz crystal from Abracon (through hole). The Abracon crystal
+oscillator has a load capacitance of 18pF and hence the caps($C_p$) employed to match this impedance is given by the formula
+$C_p = 2 * C_L - 2 * C_{stray}$&lt;/p&gt;
+&lt;p&gt;I have ignored $C_{stray}$ the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/TestLED.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;As is customary, the Hello World equivalent of a hardware project is the LED blink test. D1 is the Power status LED whereas D2 is the test LED
+and is connected to the fifth pin of Port 1. Before programming, the RST should be pulled high for 2 machine cycles to reset the MCU. To perform
+this reset quickly, I have added a pushbutton SPST between RST and VCC.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Photo" src="/MCU.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;The only interesting thing mentioning in MCU schematic is that the bypass capacitor 0.1uF has to be placed as close as possible to the VCC supply
+pin of the MCU to ensure that the shortest path is available for the high frequency currents(ripples) to flow back to the source.
+Essentially it decreases the parasitic inductance by reducing the loop area.&lt;/p&gt;
+&lt;p&gt;The Unsoldered and the Soldered boards : Kudos to OSHPark &lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/UnSoldered.jpg" width="700" height="700" /&gt;    &lt;img src="/images/Soldered.jpg" width="700" height="700" /&gt;&lt;/p&gt;
+&lt;p&gt;Lets take a quick look at the blink test before heading onto the programming intracacies.&lt;/p&gt;
+&lt;iframe src="http://www.youtube.com/embed/fNMvQsAE2kg"
+   width="600" height="400" frameborder="0" allowfullscreen&gt;
+&lt;/iframe&gt;
+
+&lt;p&gt;The usage of AT89S51 has emphasized before makes programming the board extremely simple. We are going to use SPI (Serial Peripheral Interface)
+protocol. I had an Arduino Mega lying around and decided to use that as the ISP (In-system Programmer).&lt;/p&gt;
+&lt;p&gt;These are the steps to be followed to program the 8051 board.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Upload the ArduinoISP code to the arduino you intend to use as the ISP&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Connect MISO of Arduino to MISO of the 8051 board&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Connect MOSI of Arduino to MOSI of the 8051 board&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Connect SCK of Arduino to SCK of the 8051 board&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The maximum baud rate allowed is equal to $\frac{8051 Crystal Frequency}{16}$. I usually use 19200&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;To simplify the avrdude upload process I have written a powershell script(runs only on Windows but can easily be ported).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Download the powershell script from my github repository and add the folder called Bootloader to your environment path variable&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Edit the bootloader.ps1 file present inside the Bootloader folder such that $AVRDUDE_HOME points to the avr_dude.exe and $CONF_FILE points to 
+   the config file for 8051 (F40R96CIUSLFZFP.conf). The config file is also present in the Bootloader directory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Proceed to the directory where your HEX file is present and upload it using powershell by executing the command &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;                                      bootloader.ps1 COM3 19200 your_hex_file.hex
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Detailed procedure can be found by executing the command&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;                                      bootloader.ps1 -h
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Once the code has been successfully uploaded to the 8051, short the EA/VPP pin and the VCC pin to ensure that the code memory is read from internal
+    ROM.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board"&gt;Github Link to the Powershell Scripts and Kicad Project&lt;/a&gt;&lt;/p&gt;</content><category term="AT89S51"></category><category term="8051 Board"></category></entry></feed>

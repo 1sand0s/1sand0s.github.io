@@ -54,7 +54,7 @@ Essentially it decreases the parasitic inductance by reducing the loop area.
 The Unsoldered and the Soldered boards : Kudos to OSHPark 
 
 
-<img src="UnSoldered.jpg" width="700" height="700" />    <img src="Soldered.jpg" width="700" height="700" />
+<img src="/images/UnSoldered.jpg" width="700" height="700" />    <img src="/images/Soldered.jpg" width="700" height="700" />
 
 
 Lets take a quick look at the blink test before heading onto the programming intracacies.

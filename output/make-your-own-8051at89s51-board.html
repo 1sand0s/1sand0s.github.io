@@ -5,12 +5,12 @@
             <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-
-        <title>Corner House at UT</title>
 
 
+        <title>Make your own 8051(AT89S51) Board</title>
+
+            <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Corner House at UT Full Atom Feed" />
+            <link href="/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="Corner House at UT Categories Atom Feed" />
         <!-- Bootstrap Core CSS -->
         <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
 
@@ -20,10 +20,11 @@
         <!-- Code highlight color scheme -->
             <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
 
+
         <!-- Custom Fonts -->
-        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -34,24 +35,27 @@
 
 
 
+        <meta name="description" content="Short version of my first blog post">
 
-        <meta name="tags" contents="AT89S51" />
-        <meta name="tags" contents="8051 Board" />
+        <meta name="author" content="AudiTT">
 
+        <meta name="tags" content="AT89S51">
+        <meta name="tags" content="8051 Board">
 
-			<meta property="og:locale" content="en">
+	                <meta property="og:locale" content="">
 		<meta property="og:site_name" content="Corner House at UT">
 
 	<meta property="og:type" content="article">
-	<meta property="article:author" content="">
+            <meta property="article:author" content="/author/auditt.html">
 	<meta property="og:url" content="/make-your-own-8051at89s51-board.html">
 	<meta property="og:title" content="Make your own 8051(AT89S51) Board">
-	<meta property="og:description" content="">
-	<meta property="og:image" content="/">
 	<meta property="article:published_time" content="2019-12-04 19:11:00-06:00">
+            <meta property="og:description" content="Short version of my first blog post">
+
+            <meta property="og:image" content="/theme/images/post-bg.jpg">
 </head>
 
-<body>
+<body class="article-make-your-own-8051at89s51-board">
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
@@ -89,6 +93,7 @@
                                 <a href="/author/auditt.html">AudiTT</a>
                              on Wed 04 December 2019
                         </span>
+                            <span class="meta">Updated on Wed 04 December 2019</span>
                         
                     </div>
                 </div>
@@ -118,9 +123,9 @@ the low frequency ripple in the power supply line will be reduced by the bulk de
 found the need yet to include it but just in case.</p>
 <p><img alt="Photo" src="/Crystal.PNG"></p>
 <p>The oscilltor is the usual <strong>Pierce-type oscillator</strong> employing a standard 24Mhz crystal from Abracon (through hole). The Abracon crystal
-oscillator has a load capacitance of 18pF and hence the caps(<span class="math">\(C_p\)</span>) employed to match this impedance is given by the formula
-<span class="math">\(C_p = 2 * C_L - 2 * C_{stray}\)</span></p>
-<p>I have ignored <span class="math">\(C_{stray}\)</span> the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.</p>
+oscillator has a load capacitance of 18pF and hence the caps($C_p$) employed to match this impedance is given by the formula
+$C_p = 2 * C_L - 2 * C_{stray}$</p>
+<p>I have ignored $C_{stray}$ the stray capacitance since I have placed the crystal very close to the XTAL pins of the MCU.</p>
 <p><img alt="Photo" src="/TestLED.PNG"></p>
 <p>As is customary, the Hello World equivalent of a hardware project is the LED blink test. D1 is the Power status LED whereas D2 is the test LED
 and is connected to the fifth pin of Port 1. Before programming, the RST should be pulled high for 2 machine cycles to reset the MCU. To perform
@@ -130,7 +135,7 @@ this reset quickly, I have added a pushbutton SPST between RST and VCC.</p>
 pin of the MCU to ensure that the shortest path is available for the high frequency currents(ripples) to flow back to the source.
 Essentially it decreases the parasitic inductance by reducing the loop area.</p>
 <p>The Unsoldered and the Soldered boards : Kudos to OSHPark </p>
-<p><img src="UnSoldered.jpg" width="700" height="700" />    <img src="Soldered.jpg" width="700" height="700" /></p>
+<p><img src="/images/UnSoldered.jpg" width="700" height="700" />    <img src="/images/Soldered.jpg" width="700" height="700" /></p>
 <p>Lets take a quick look at the blink test before heading onto the programming intracacies.</p>
 <iframe src="http://www.youtube.com/embed/fNMvQsAE2kg"
    width="600" height="400" frameborder="0" allowfullscreen>
@@ -153,7 +158,7 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
 <p>Connect SCK of Arduino to SCK of the 8051 board</p>
 </li>
 <li>
-<p>The maximum baud rate allowed is equal to <span class="math">\(\frac{8051 Crystal Frequency}{16}\)</span>. I usually use 19200</p>
+<p>The maximum baud rate allowed is equal to $\frac{8051 Crystal Frequency}{16}$. I usually use 19200</p>
 </li>
 <li>
 <p>To simplify the avrdude upload process I have written a powershell script(runs only on Windows but can easily be ported).</p>
@@ -167,14 +172,14 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
 </li>
 <li>
 <p>Proceed to the directory where your HEX file is present and upload it using powershell by executing the command </p>
-<div class="highlight"><pre><span></span><span class="err">                                      bootloader.ps1 COM3 19200 your_hex_file.hex</span>
+<div class="highlight"><pre><span></span>                                      bootloader.ps1 COM3 19200 your_hex_file.hex
 </pre></div>
 
 
 </li>
 <li>
 <p>Detailed procedure can be found by executing the command</p>
-<div class="highlight"><pre><span></span><span class="err">                                      bootloader.ps1 -h</span>
+<div class="highlight"><pre><span></span>                                      bootloader.ps1 -h
 </pre></div>
 
 
@@ -185,64 +190,11 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
 </li>
 </ol>
 <p><a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board">Github Link to the Powershell Scripts and Kicad Project</a></p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    var location_protocol = (false) ? 'https' : document.location.protocol;
-    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
     </article>
+
+        <div class="tags">
+            <p>tags: <a href="/tag/at89s51.html">AT89S51</a>, <a href="/tag/8051-board.html">8051 Board</a></p>
+        </div>
 
     <hr>
 
@@ -258,46 +210,39 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <ul class="list-inline text-center">
-                        <li>
-                            <a href="">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
+                            <li>
+                                <a href="#">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-you can add links in your config file fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-another social link fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
                     </ul>
-                    <p class="copyright text-muted">Blog powered by <a href="http://getpelican.com">Pelican</a>,
-                which takes great advantage of <a href="http://python.org">Python</a>.</p>
-                </div>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  AudiTT
+</p>                </div>
             </div>
         </div>
     </footer>
 
     <!-- jQuery -->
-    <script src="/theme/js/jquery.js"></script>
+    <script src="/theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/theme/js/bootstrap.min.js"></script>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="/theme/js/clean-blog.min.js"></script>
+        <!-- Custom Theme JavaScript -->
+        <script src="/theme/js/clean-blog.min.js"></script>
 
 </body>
 

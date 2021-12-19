@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Radars</title><link href="/" rel="alternate"></link><link href="/feeds/radars.atom.xml" rel="self"></link><id>/</id><updated>2021-11-06T19:11:00-05:00</updated><entry><title>Building an S-Band Radar</title><link href="/building-an-s-band-radar.html" rel="alternate"></link><published>2021-11-06T19:11:00-05:00</published><updated>2021-11-06T19:11:00-05:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-06:/building-an-s-band-radar.html</id><summary type="html">&lt;p&gt;This post details how to build an  S-Band Ground Penetrating Radar&lt;/p&gt;</summary><content type="html">&lt;p&gt;This post details my second and perhaps a more in-depth attempt at building an S-Band Ground Penetrating Radar. So lets jump right in ! &lt;/p&gt;
+&lt;h3&gt; What is the S-Band and why choose it ? &lt;/h3&gt;
+
+&lt;p&gt;Electromagnetic waves are capable of existing with various frequencies and this entire range of frequency is called a spectrum. EM waves have been harnesed to serve
+several different purposes, from Communication to Remote Sensing and down to heating our foods ! We certainly cannot have someone microwaving their broccoli jeopardising
+the radio communication with a space shuttle for instance. Hence, to maximize the potential of EM wave utility, we need to &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Allocate certaing range of frequencies called bands for specific operations&lt;/li&gt;
+&lt;li&gt;Share the band by following the max transmit power statutes  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The establishment of such laws and regulations gives the governing body a legal basis to prosecute any malfeasance while simultaneously preventing interference amongst users.
+The laws and regulations concerning the allocation and usage of the EM spectrum in the United States is set by the FCC. The S-Band is one such range of frequencies covering
+2-4GHz. Operations such as Satellite Communciations, WiFi and microwave ovens etc utilize this band. In this project, we restrict ourselves to the ISM band 2.4 - 2.4835GHz
+portion of the S-Band.&lt;/p&gt;
+&lt;p&gt;In summary:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We operate in the ISM band of the S-Band 2.4-2.4835GHz&lt;/li&gt;
+&lt;li&gt;Mass production of commercial devices for Wifi applications utilizing this band helps reduce the cost of our build&lt;/li&gt;
+&lt;li&gt;Does not require licensing from FCC as long as we abide by the rules in &amp;sect; 15.249 of Title 47 of Code of Federal Regulations    &lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt; Functional Diagram &lt;/h3&gt;
+
+&lt;p&gt;&lt;img alt="thumbnail" height="450px" src="/blockDiagram.png"&gt;&lt;/p&gt;
+&lt;p&gt;The functional diagram of our build is presented above. All images used are representational and attributions to the respective authors can be found at the bottom of this page.
+At the highest level of abstraction, our GPR is made up of the PC, GPR controller board and the transmit and receive antennas. &lt;/p&gt;
+&lt;p&gt;Functions of the PC&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Upload firmware to the GPR controller MCU&lt;/li&gt;
+&lt;li&gt;Obtain data from GPR controller MCU for analysis&lt;/li&gt;
+&lt;li&gt;Supply power to the GPR controller&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Functions of the GPR Controller Board&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Digitize the range information and transfer it to the PC&lt;/li&gt;
+&lt;li&gt;Generate an FMCW sweep/chirp of desired frequency range and resolution&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Functions of the Antenna&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Transmit the FMCW signal from the GPR controller board&lt;/li&gt;
+&lt;li&gt;Receive the reflected signal and transfer it to the GPR controller board&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt; GPR Controller Board &lt;/h3&gt;
+
+&lt;p&gt;The major constraint in choosing the parts for the board is packaging of the IC. Since I don't have a solder reflow oven, I cannot solder packages without leads.&lt;/p&gt;
+&lt;h4&gt; USB to UART/SPI &lt;/h4&gt;
+
+&lt;p&gt;MCP2210
+&lt;h4&gt; DSP Microcontroller &lt;/h4&gt;
+&lt;h4&gt; Fractional N PLL &lt;/h4&gt;
+&lt;h4&gt; VCO &lt;/h4&gt;
+&lt;h4&gt; Loop Filter &lt;/h4&gt;
+&lt;h4&gt; Reference Oscillator &lt;/h4&gt;
+&lt;h4&gt; Power Divider &lt;/h4&gt;
+&lt;h4&gt; LNA &lt;/h4&gt;
+&lt;h4&gt; Mixer &lt;/h4&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/Lc3B-Assembler"&gt;Github Link to the LC3b Assembler&lt;/a&gt;&lt;/p&gt;</content><category term="FMCW"></category></entry></feed>

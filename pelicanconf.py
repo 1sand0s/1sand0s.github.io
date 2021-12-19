@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = u'AudiTT'
 SITENAME = u'Corner House at UT'
 SITEURL = ''
-THEME = 'pelican-clean-blog-ea156f8f1741e473bc0ab848b7c8898112d6ffb5'
+THEME = '/home/audi/Github/pelican-clean-blog-master'
 PATH = 'content'
 #PLUGINS_PATHS = './content/plugins'
 PLUGINS = ["pelican_plugin-render_math.render_math"]
