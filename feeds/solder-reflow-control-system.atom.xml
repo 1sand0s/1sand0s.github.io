@@ -50,12 +50,12 @@ is driven into saturation, from the datasheet for 2SD1805 we see that the typica
 &lt;p&gt;Finished my finals this week, so I found some time to test the board. I first did continuity tests with a multimeter before powering the board to make sure there aren't
 any shorts (especially between the voltage rails). To test the board, I powered it with a variac (variable output transformer) for safety reasons. The measurements I took
 are given below&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/SolderReflow24AC.jpg" width="800" height="600" /&gt;
-&lt;img src="/images/SolderReflow10V.jpg" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/SolderReflow24AC.jpg" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/SolderReflow10V.jpg" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;p&gt;I made two mistakes (they can be corrected on the board itself but I learnt a great deal from them). In the first image, I am measuring the AC voltage across the 
 secondary of the step-down transformer and in the second image I am measuring the DC voltage at the output of the regulator (LM2940IMPX-10). Explanation of each of 
 the measurements warrants a subsection of its own, so lets get started&lt;/p&gt;
-&lt;h5&gt; Transformer Secondary Voltage &lt;/h5&gt;
+&lt;h4&gt; Transformer Secondary Voltage &lt;/h4&gt;
 
 &lt;p&gt;This is where I made my first mistake. You can see from the first image, the secondary voltage is 24V RMS for an input of ~100V RMS. The datasheet for F24-100-C2 
 said to expect 24V RMS for 115V RMS input, so clearly there's a deviation but the mistake I made is interpreting these voltages as peak rather than RMS. As stated 
@@ -67,12 +67,23 @@ if I powered it directly from the mains.&lt;/p&gt;
 &lt;p&gt;It is a dual secondary transformer, there is a center tap at pins &lt;code&gt;6&lt;/code&gt; or &lt;code&gt;7&lt;/code&gt; at which the voltage is half (12V RMS) of the total output voltage (24V RMS). By simply 
 soldering pad &lt;code&gt;8&lt;/code&gt; to pad &lt;code&gt;6&lt;/code&gt; and clipping the transformer pin corressponding to pad 8 we can ensure that the ripple smoothing capacitor charges to only 17V RMS 
 which is well within the operating ranging of the regulator (6-26V). &lt;/p&gt;
-&lt;h5&gt; Regulator Output Voltage &lt;/h5&gt;
+&lt;h4&gt; Regulator Output Voltage &lt;/h4&gt;
 
 &lt;p&gt;As we saw before, I was able to get a 10V DC at the ouput of the regulator when I ensured that the transformer output was below 26V peak (~19V RMS). So I know that 
 that portion is working perfectly fine, however, when I measured the voltage at any 3.3V pins, I got a near 0V DC reading. So clearly, there is still something 
-wrong with the board and it has to do with the way I am generating 3.3V from 10V , specifically resistors R4 and R5 as shown below&lt;/p&gt;
+wrong with the board and this where things get exciting. Spoiler : It has to do with the way I am generating 3.3V from 10V , specifically resistors R4 and R5 as 
+shown below. Fret not! once again, the fix is easy but the learning is immense and worth it.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/R2R_3_3V.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;I am using a voltage divider to generate the 3.3V supply from the 10V supply, this circuit would work perfectly fine in isolation. However, when we connect a load 
+in parallel with R5, the voltage drop across R5 now depends on the effective parallel impedance and not just the resistance of R5. Voila, our port VDD_3.3 is no 
+longer guaranteed to be at 3.3V. &lt;/p&gt;
+&lt;p&gt;Lets take a look for two loads 10KOhms and 100Ohms. With 10KOhms in parallel with R5, since R5 is much smaller than 10K, the effective parallel impedance is closer 
+to R5 and is 900Ohms. Therefore, the voltage at port VDD_3.3 is now 3.1V instead of 3.3V but is still close enough to not significantly impact the working of any 
+components on board. Now lets connect 100Ohms, the effective parallel impedance is now 90Ohms and so the voltage at port VDD_3.3 is just 0.4V !! Much lower than the 
+expected 3.3V and will obviously cause almost all components to stop working.&lt;/p&gt;
+&lt;p&gt;For a closer analysis, and to demonstrate the above scenario, I performed a DC-IR drp analysis in Ansys SIWave and the results are shown below&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/siWave200_100.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/siWave20_10.png" width="800" height="600" /&gt;&lt;/p&gt;
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
