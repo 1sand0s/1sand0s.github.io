@@ -196,11 +196,20 @@ longer guaranteed to be at 3.3V. </p>
 to R5 and is 900 Ohms. Therefore, the voltage at port VDD_3.3 is now 3.1V instead of 3.3V but is still close enough to not significantly impact the working of any 
 components on board. Now lets connect 100 Ohms, the effective parallel impedance is now 90 Ohms and so the voltage at port VDD_3.3 is just 0.4V !! Much lower than the 
 expected 3.3V and will obviously cause almost all components to stop working.</p>
-<p>For a closer analysis, and to demonstrate the above scenario, I performed a DC-IR drp analysis in Ansys SIWave and the results are shown below</p>
+<p>For a closer analysis, and to demonstrate the above scenario, I performed a DC-IR drop analysis. To do so I converted the KiCAD project into Altium and exported 
+it as a ODB++ file. I imported this into Ansys SIWave and assigned the components their appropriate values. I then assigned a voltage source of 10V to the output 
+of the regulator (U1 LM2940IMPX-10) and current sinks across VDD and VSS pins of the STM32L053 (20mA from datasheet) and MAX31855(1.5mA from datasheet). The results 
+of the DC-IR drop analysis for two pairs of R4 and R5 values are shown below</p>
 <p><img src="/images/siWave200_100.png" width="800" height="600" />
-Figure 10 : DC-IR drop analysis with R4 = 200 Ohms and R5 = 100 Ohms</p>
+Figure 10 : DC-IR drop analysis with R4 = 400 Ohms and R5 = 200 Ohms</p>
+<p>In Fig.10, I have set R4 and R5 as 400 Ohms and 200 Ohms respectively. This demonstrates the condition where the load impedance in parallel with R5 is much smaller 
+than R5. We see that the 10V net (in red) is as expected at 10V, however the power plane corressponding to 3.3V is at just ~0.46V !! This implies that almost all 
+of the 10V is dropped across R4.</p>
 <p><img src="/images/siWave20_10_2.png" width="800" height="600" />
 Figure 11 : DC-IR drop analysis with R4 = 20 Ohms and R5 = 10 Ohms</p>
+<p>In Fig.11, I have set R4 and R5 as 20 Ohms and 10 Ohms respectively. This demonstrates the condition where the load impedance in parallel with R5 is much larger 
+than R5. We see that once agains the 10V net (in red) is as expected at 10V and this time the power plane corressponding to 3.3V is at ~3.2V as required. </p>
+<p>So to rectify my board, I have to replace R4 and R5 with smaller values while keeping their resistance ratio 2:1.</p>
 <h3> Bill of Materials </h3>
 
 <table>
