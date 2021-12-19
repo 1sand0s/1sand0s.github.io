@@ -159,6 +159,27 @@ any shorts (especially between the voltage rails). To test the board, I powered 
 are given below</p>
 <p><img src="/images/SolderReflow24AC.jpg" width="800" height="600" />
 <img src="/images/SolderReflow10V.jpg" width="800" height="600" /></p>
+<p>I made two mistakes (they can be corrected on the board itself but I learnt a great deal from them). In the first image, I am measuring the AC voltage across the 
+secondary of the step-down transformer and in the second image I am measuring the DC voltage at the output of the regulator (LM2940IMPX-10). Explanation of each of 
+the measurements warrants a subsection of its own, so lets get started</p>
+<h5> Transformer Secondary Voltage </h5>
+
+<p>This is where I made my first mistake. You can see from the first image, the secondary voltage is 24V RMS for an input of ~100V RMS. The datasheet for F24-100-C2 
+said to expect 24V RMS for 115V RMS input, so clearly there's a deviation but the mistake I made is interpreting these voltages as peak rather than RMS. As stated 
+before, the ripple smoothing capacitor(470uF) charges to the peak input of pulsating DC. According to my calculations it would've charged to 24V but since this is 
+RMS, in reality it charges to 24xsqrt(2)=~34V which exceeds the input range of the 10V regulator I am using (LM2940IMPX-10). So this circuit will clearly not work 
+if I powered it directly from the mains.</p>
+<p>But luckily, there is a simple work around. Take a look at the step-down transformer layout on the board below</p>
+<p><img src="/images/StepDownTransformer.png" width="800" height="600" /></p>
+<p>It is a dual secondary transformer, there is a center tap at pins <code>6</code> or <code>7</code> at which the voltage is half (12V RMS) of the total output voltage (24V RMS). By simply 
+soldering pad <code>8</code> to pad <code>6</code> and clipping the transformer pin corressponding to pad 8 we can ensure that the ripple smoothing capacitor charges to only 17V RMS 
+which is well within the operating ranging of the regulator (6-26V). </p>
+<h5> Regulator Output Voltage </h5>
+
+<p>As we saw before, I was able to get a 10V DC at the ouput of the regulator when I ensured that the transformer output was below 26V peak (~19V RMS). So I know that 
+that portion is working perfectly fine, however, when I measured the voltage at any 3.3V pins, I got a near 0V DC reading. So clearly, there is still something 
+wrong with the board and it has to do with the way I am generating 3.3V from 10V , specifically resistors R4 and R5 as shown below</p>
+<p><img src="/images/R2R_3_3V.png" width="800" height="600" /></p>
 <h3> Bill of Materials </h3>
 
 <table>
