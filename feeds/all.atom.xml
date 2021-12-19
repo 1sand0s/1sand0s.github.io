@@ -105,7 +105,7 @@ than R5. We see that once agains the 10V net (in red) is as expected at 10V and 
 &lt;p&gt;So to rectify my board, I have to replace R4 and R5 with smaller values while keeping their resistance ratio 2:1. Nevertheless, this is not a good way of designing 
 the power supply for the 3.3V power plane (I'll discuss a better way). The reason is because, although choosing a smaller R4 and R5 fixes the issue with voltage 
 drop, a larger current is going to be sunk by R5 regardless of the current demands of other components connected to the 3.3V power plane. This is shown in Fig.12&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/siWaveCurrent.png" width="800" height="600" /&gt;
+&lt;p&gt;&lt;img src="/images/siWaveCurrent.PNG" width="800" height="600" /&gt;
 Figure 12 : Surface Current distribution with R4 = 20 Ohms and R = 10 Ohms&lt;/p&gt;
 &lt;h3&gt; Better Alternative for powering 3.3V Power Plane &lt;/h3&gt;
 
