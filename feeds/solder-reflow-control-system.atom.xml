@@ -115,13 +115,13 @@ use a voltage divider in conjuction with an opamp configured as a voltage follow
 &lt;p&gt;&lt;img src="/images/voltageDividerSPICE.PNG" width="800" height="600" /&gt;
 Figure 13 : SPICE DC simulation of two variations of Voltage Divider&lt;/p&gt;
 &lt;p&gt;Fig.13 contains two variations of the voltage divider. To the left we see the voltage divider we have discussed so far, to ensure that the voltage drop across 
-R5_OLD is close 3.3V we have to ensure that R5_OLD is smaller than LOAD (50 Ohms) but this implies a larger current sunk by R5_OLD. So ideally, we want to use 
+R5_OLD is close to 3.3V we have to ensure that R5_OLD is smaller than LOAD (50 Ohms) but this implies a larger current sunk by R5_OLD. So ideally, we want to use 
 large values for R4 and R5 since this decreases the current sunk by R5 thus improving the efficieny of the circuit but then the voltage drop across R5 is extremely 
 small due to the LOAD being smaller than R5. We can overcome this by using a voltage follower as shown in the right half of the circuit in Fig.13. Since an opamp 
 configured as voltage-follower has ideally infinite input impedance this implies that we can use large values for R4 and R5 as shown by R4_NEW and R5_NEW without 
 compromising on the 3.3V drop across R5_NEW on connecting the LOAD. The opamp as a voltage-follower acts as a buffer, isolating the output and input. The current 
 through R5_OLD is 0.3A whereas that through R5_NEW is 3mA, about 2 orders of magnitude lower. The voltage drop across R5_OLD is 2.9V and that across R5_NEW is 3.3V 
-and therefore the voltage divider version of the right of Fig.13 not only provides a consistent 3.3V output regardless of the load connected to it but by using 
+and therefore the voltage divider version on the right of Fig.13 not only provides a consistent 3.3V output regardless of the load connected to it but by using 
 large R4 and R5 we can also improve the efficiency of the circuit.&lt;/p&gt;
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
