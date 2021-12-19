@@ -6,17 +6,20 @@ soldering them, I decided on building a Solder Reflow Oven 2.0 !&lt;/p&gt;
 12V dc adapter to power the board. This time around I wanted to power the board and the
 reflow oven from the mains and also add some TFT LCD tech to make it more rad!! This version uses
 an STM32L053 mcu based on ARM Cortex M0+. Well, thats all the motivation/excuse I needed to build Solder Reflow Oven 2.0&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/SolderReflow_3D.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/SolderReflow_3D.png" width="800" height="600" /&gt;
+Figure 1 : 3D model of the Solder Reflow Oven Controller&lt;/p&gt;
 &lt;h3&gt; Power Supply &lt;/h3&gt;
 
 &lt;p&gt;I did not want to deal with multiple wires coming in and out of the oven so I decided to power the board from the mains. This meant incorporating
 an AC to DC (3.3V) stage. The stage consists of a rectifier implemented using a diode-bridge, before rectifying I step down the voltage from 115V to
 24V so that I can use components (diodes, capacitors) rated at lower voltages which makes the entire build cheaper.  &lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/powerStage.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/powerStage.png" width="800" height="600" /&gt;
+Figure 2 : 3D model of the power stage&lt;/p&gt;
 &lt;p&gt;On applying the stepped down AC to the diode bridge, we obtain a pulsating DC at the output. To smooth this pulsating DC we can use a large capacitor. Once
 the capacitor fully charges to peak value of the pulsating DC, it can practically supply charge with minimal drop in its voltage till it charges again. This helps remove
 ripple and produce a constant DC voltage. The output of the ripple smoothing capacitor is then input to a 10V regulator to obtain a 10V stable output.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/R2R_3_3V.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/R2R_3_3V.png" width="800" height="600" /&gt;
+Figure 3 : Schematic of 10V and 3.3V supply generation&lt;/p&gt;
 &lt;p&gt;I then use a R2R divider to obtain 3.3V from the 10V rectifier output. Although this is not the most efficient way to do it, this isn't much of a problem at low 
 voltages or power. We would have needed a buck converter if the power involved was higher to improve efficiency of the conversion from 10V to 3.3V.&lt;/p&gt;
 &lt;h3&gt; Crystal Layout &lt;/h3&gt;
@@ -29,11 +32,13 @@ coupling primarily depends on :&lt;/p&gt;
 &lt;li&gt;Overlap area - long sections of parallel traces increases capacitive coupling (more noise)&lt;/li&gt;
 &lt;li&gt;Distance to ground plane - large distance between signal and ground plane increases capacitive coupling (more noise)&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img src="/images/crystalLayout.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/crystalLayout.png" width="800" height="600" /&gt;
+Figure 4 : Crystal layout on top Cu layer&lt;/p&gt;
 &lt;p&gt;In the above layout, the highlighted components and traces correspond to the crystal unit. By restricting other signal traces and copper pour around my crystal unit 
 I can reduce the overlap area (see above points) and thereby reduce capacitive coupling. Distance to ground plane is reduced by opting for a 4-layer board but I 
 think this layout should be sufficient for the frequencies I am working at and should work without any issues with a 2-layer board.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/crystalLayoutB.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/crystalLayoutB.png" width="800" height="600" /&gt;
+Figure 5 : Crystal layout on bottom Cu layer  &lt;/p&gt;
 &lt;p&gt;I also use a local ground plane for the crystal unit and tie it to the global ground at a single point. This prevents any other high frequency return currents from
 flowing under the crystal unit (this is due to increase in inductance due to larger loop area that these return currents would have to take if they flowed under 
 the crystal unit's local ground). This further improves the integrity of all signals involved in our crystal unit. &lt;/p&gt;
@@ -41,7 +46,8 @@ the crystal unit's local ground). This further improves the integrity of all sig
 
 &lt;p&gt;The relay I used requires about 15mA of current to turn on, the STM32L053 can deliver it but while operating at near its max rating which decreases its lifetime. 
 Instead, I use an NPN bjt to drive the relay while controlling it with the mcu. &lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/relayControl.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/relayControl.png" width="800" height="600" /&gt;
+Figure 6 : NPN BJT biasing schematic&lt;/p&gt;
 &lt;p&gt;I bias the NPN such that it operates in either cut-off or saturation. Cut-off is easy, we just make Vbe 0. To drive it into saturation we need to ensure that Vce
 is driven into saturation, from the datasheet for 2SD1805 we see that the typical value for Vce,sat is 0.22V. Therefore, we need to choose Rc such that Vce is Vce,sat when Ic is 15mA. Hence, Rc = (10-Vce,sat)/Ic = (10-0.22)/0.015 = 652 Ohms. I use 653 Ohms for Rc. Since Ic is independent of beta in saturation, we can choose
  Ib independent of Ic as long as its sufficient to make Vbe &amp;gt; 0.7V (turn on base-emitter junction). I chose Ib to be 10mA from which I calculate Rb = (3.3V - Vbe)/Ib = (3.3 - 0.7)/0.01 = 260 Ohms. I therefore, use 260 Ohms for Rb.&lt;/p&gt;
@@ -50,20 +56,23 @@ is driven into saturation, from the datasheet for 2SD1805 we see that the typica
 &lt;p&gt;Finished my finals this week, so I found some time to test the board. I first did continuity tests with a multimeter before powering the board to make sure there aren't
 any shorts (especially between the voltage rails). To test the board, I powered it with a variac (variable output transformer) for safety reasons. The measurements I took
 are given below&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/SolderReflow24AC.jpg" width="800" height="600" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/SolderReflow10V.jpg" width="800" height="600" /&gt;&lt;/p&gt;
-&lt;p&gt;I made two mistakes (they can be corrected on the board itself but I learnt a great deal from them). In the first image, I am measuring the AC voltage across the 
-secondary of the step-down transformer and in the second image I am measuring the DC voltage at the output of the regulator (LM2940IMPX-10). Explanation of each of 
+&lt;p&gt;&lt;img src="/images/SolderReflow24AC.jpg" width="800" height="600" /&gt;
+Figure 7 : RMS voltage measured at the secondary of the transformer&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/SolderReflow10V.jpg" width="800" height="600" /&gt;
+Figure 8 : DC voltage measured at the ouput of the 10V regulator&lt;/p&gt;
+&lt;p&gt;I made two mistakes (they can be corrected on the board itself but I learnt a great deal from them). In the Fig.7, I am measuring the AC voltage across the 
+secondary of the step-down transformer and in Fig.8 I am measuring the DC voltage at the output of the regulator (LM2940IMPX-10). Explanation of each of 
 the measurements warrants a subsection of its own, so lets get started&lt;/p&gt;
 &lt;h4&gt; Transformer Secondary Voltage &lt;/h4&gt;
 
-&lt;p&gt;This is where I made my first mistake. You can see from the first image, the secondary voltage is 24V RMS for an input of ~100V RMS. The datasheet for F24-100-C2 
+&lt;p&gt;This is where I made my first mistake. You can see from the Fig.7, the secondary voltage is 24V RMS for an input of ~100V RMS. The datasheet for F24-100-C2 
 said to expect 24V RMS for 115V RMS input, so clearly there's a deviation but the mistake I made is interpreting these voltages as peak rather than RMS. As stated 
 before, the ripple smoothing capacitor(470uF) charges to the peak input of pulsating DC. According to my calculations it would've charged to 24V but since this is 
 RMS, in reality it charges to 24xsqrt(2)=~34V which exceeds the input range of the 10V regulator I am using (LM2940IMPX-10). So this circuit will clearly not work 
 if I powered it directly from the mains.&lt;/p&gt;
 &lt;p&gt;But luckily, there is a simple work around. Take a look at the step-down transformer layout on the board below&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/StepDownTransformer.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/StepDownTransformer.png" width="800" height="600" /&gt;
+Figure 9 : Layout of the step-down transformer&lt;/p&gt;
 &lt;p&gt;It is a dual secondary transformer, there is a center tap at pins &lt;code&gt;6&lt;/code&gt; or &lt;code&gt;7&lt;/code&gt; at which the voltage is half (12V RMS) of the total output voltage (24V RMS). By simply 
 soldering pad &lt;code&gt;8&lt;/code&gt; to pad &lt;code&gt;6&lt;/code&gt; and clipping the transformer pin corressponding to pad 8 we can ensure that the ripple smoothing capacitor charges to only 17V RMS 
 which is well within the operating ranging of the regulator (6-26V). &lt;/p&gt;
@@ -72,18 +81,19 @@ which is well within the operating ranging of the regulator (6-26V). &lt;/p&gt;
 &lt;p&gt;As we saw before, I was able to get a 10V DC at the ouput of the regulator when I ensured that the transformer output was below 26V peak (~19V RMS). So I know that 
 that portion is working perfectly fine, however, when I measured the voltage at any 3.3V pins, I got a near 0V DC reading. So clearly, there is still something 
 wrong with the board and this where things get exciting. Spoiler : It has to do with the way I am generating 3.3V from 10V , specifically resistors R4 and R5 as 
-shown below. Fret not! once again, the fix is easy but the learning is immense and worth it.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/R2R_3_3V.png" width="800" height="600" /&gt;&lt;/p&gt;
-&lt;p&gt;I am using a voltage divider to generate the 3.3V supply from the 10V supply, this circuit would work perfectly fine in isolation. However, when we connect a load 
+shown in Fig.3. Fret not! once again, the fix is easy but the learning is immense and worth it.&lt;/p&gt;
+&lt;p&gt;In Fig.3 I am using a voltage divider to generate the 3.3V supply from the 10V supply, this circuit would work perfectly fine in isolation. However, when we connect a load 
 in parallel with R5, the voltage drop across R5 now depends on the effective parallel impedance and not just the resistance of R5. Voila, our port VDD_3.3 is no 
 longer guaranteed to be at 3.3V. &lt;/p&gt;
-&lt;p&gt;Lets take a look for two loads 10KOhms and 100Ohms. With 10KOhms in parallel with R5, since R5 is much smaller than 10K, the effective parallel impedance is closer 
-to R5 and is 900Ohms. Therefore, the voltage at port VDD_3.3 is now 3.1V instead of 3.3V but is still close enough to not significantly impact the working of any 
-components on board. Now lets connect 100Ohms, the effective parallel impedance is now 90Ohms and so the voltage at port VDD_3.3 is just 0.4V !! Much lower than the 
+&lt;p&gt;Lets take a look for two loads 10 KOhms and 100 Ohms. With 10 KOhms in parallel with R5, since R5 is much smaller than 10 KOhms, the effective parallel impedance is closer 
+to R5 and is 900 Ohms. Therefore, the voltage at port VDD_3.3 is now 3.1V instead of 3.3V but is still close enough to not significantly impact the working of any 
+components on board. Now lets connect 100 Ohms, the effective parallel impedance is now 90 Ohms and so the voltage at port VDD_3.3 is just 0.4V !! Much lower than the 
 expected 3.3V and will obviously cause almost all components to stop working.&lt;/p&gt;
 &lt;p&gt;For a closer analysis, and to demonstrate the above scenario, I performed a DC-IR drp analysis in Ansys SIWave and the results are shown below&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/siWave200_100.png" width="800" height="600" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/images/siWave20_10.png" width="800" height="600" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/siWave200_100.png" width="800" height="600" /&gt;
+Figure 10 : DC-IR drop analysis with R4 = 200 Ohms and R5 = 100 Ohms&lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/siWave20_10_2.png" width="800" height="600" /&gt;
+Figure 11 : DC-IR drop analysis with R4 = 20 Ohms and R5 = 10 Ohms&lt;/p&gt;
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
