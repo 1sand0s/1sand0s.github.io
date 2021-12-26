@@ -15,6 +15,7 @@ Figure 1 : 3D model of the Solder Reflow Oven Controller&lt;/p&gt;
 &lt;li&gt;&lt;a href="#CrystalLayout"&gt;Crystal Layout&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#Relay"&gt;Controlling the Relay&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#TestCircuit"&gt;Testing the Circuit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Update"&gt;Update and Modified Design&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3&gt; Power Supply &lt;/h3&gt;
 
@@ -135,6 +136,8 @@ compromising on the 3.3V drop across R5_NEW on connecting the LOAD. The opamp as
 through R5_OLD is 0.3A whereas that through R5_NEW is 3mA, about 2 orders of magnitude lower. The voltage drop across R5_OLD is 2.9V and that across R5_NEW is 3.3V 
 and therefore the voltage divider version on the right of Fig.13 not only provides a consistent 3.3V output regardless of the load connected to it but by using 
 large R4 and R5 we can also improve the efficiency of the circuit.&lt;/p&gt;
+&lt;h3&gt; Update and Modified Design &lt;/h3&gt;
+
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
@@ -340,7 +343,8 @@ large R4 and R5 we can also improve the efficiency of the circuit.&lt;/p&gt;
 &lt;td align="left"&gt;Thin Film Resistors - SMD Thin Film Resistors - SMD 0603 0.1% 2Kohm 25ppm SMD&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;</content><category term="PID Control System"></category></entry><entry><title>Building an S-Band Radar</title><link href="/building-an-s-band-radar.html" rel="alternate"></link><published>2021-11-06T19:11:00-05:00</published><updated>2021-11-06T19:11:00-05:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-06:/building-an-s-band-radar.html</id><summary type="html">&lt;p&gt;This post details how to build an  S-Band Ground Penetrating Radar&lt;/p&gt;</summary><content type="html">&lt;p&gt;This post details my second and perhaps a more in-depth attempt at building an S-Band Ground Penetrating Radar. So lets jump right in ! &lt;/p&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/Solder_Reflow_Oven_2.0"&gt;Github Link to the Solder Reflow Oven 2.0 Project&lt;/a&gt;&lt;/p&gt;</content><category term="PID Control System"></category></entry><entry><title>Building an S-Band Radar</title><link href="/building-an-s-band-radar.html" rel="alternate"></link><published>2021-11-06T19:11:00-05:00</published><updated>2021-11-06T19:11:00-05:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-06:/building-an-s-band-radar.html</id><summary type="html">&lt;p&gt;This post details how to build an  S-Band Ground Penetrating Radar&lt;/p&gt;</summary><content type="html">&lt;p&gt;This post details my second and perhaps a more in-depth attempt at building an S-Band Ground Penetrating Radar. So lets jump right in ! &lt;/p&gt;
 &lt;h3&gt; What is the S-Band and why choose it ? &lt;/h3&gt;
 
 &lt;p&gt;Electromagnetic waves are capable of existing with various frequencies and this entire range of frequency is called a spectrum. EM waves have been harnesed to serve
@@ -641,4 +645,4 @@ protocol. I had an Arduino Mega lying around and decided to use that as the ISP 
     ROM.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board"&gt;Github Link to the Powershell Scripts and Kicad Project&lt;/a&gt;&lt;/p&gt;</content><category term="AT89S51"></category><category term="8051 Board"></category></entry></feed>
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/AT89S51-8051-General-Purpose-Board"&gt;Github Link to the AT89S51 breakout Project&lt;/a&gt;&lt;/p&gt;</content><category term="AT89S51"></category><category term="8051 Board"></category></entry></feed>

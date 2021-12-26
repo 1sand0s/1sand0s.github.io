@@ -15,6 +15,7 @@ Figure 1 : 3D model of the Solder Reflow Oven Controller&lt;/p&gt;
 &lt;li&gt;&lt;a href="#CrystalLayout"&gt;Crystal Layout&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#Relay"&gt;Controlling the Relay&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#TestCircuit"&gt;Testing the Circuit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Update"&gt;Update and Modified Design&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3&gt; Power Supply &lt;/h3&gt;
 
@@ -135,6 +136,8 @@ compromising on the 3.3V drop across R5_NEW on connecting the LOAD. The opamp as
 through R5_OLD is 0.3A whereas that through R5_NEW is 3mA, about 2 orders of magnitude lower. The voltage drop across R5_OLD is 2.9V and that across R5_NEW is 3.3V 
 and therefore the voltage divider version on the right of Fig.13 not only provides a consistent 3.3V output regardless of the load connected to it but by using 
 large R4 and R5 we can also improve the efficiency of the circuit.&lt;/p&gt;
+&lt;h3&gt; Update and Modified Design &lt;/h3&gt;
+
 &lt;h3&gt; Bill of Materials &lt;/h3&gt;
 
 &lt;table&gt;
@@ -340,4 +343,5 @@ large R4 and R5 we can also improve the efficiency of the circuit.&lt;/p&gt;
 &lt;td align="left"&gt;Thin Film Resistors - SMD Thin Film Resistors - SMD 0603 0.1% 2Kohm 25ppm SMD&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;</content><category term="PID Control System"></category></entry></feed>
+&lt;/table&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/Solder_Reflow_Oven_2.0"&gt;Github Link to the Solder Reflow Oven 2.0 Project&lt;/a&gt;&lt;/p&gt;</content><category term="PID Control System"></category></entry></feed>
