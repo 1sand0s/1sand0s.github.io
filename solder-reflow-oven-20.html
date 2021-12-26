@@ -115,8 +115,17 @@ reflow oven from the mains and also add some TFT LCD tech to make it more rad!! 
 an STM32L053 mcu based on ARM Cortex M0+. Well, thats all the motivation/excuse I needed to build Solder Reflow Oven 2.0</p>
 <p><img src="/images/SolderReflow_3D.png" width="800" height="600" />
 Figure 1 : 3D model of the Solder Reflow Oven Controller</p>
+<h3> Table of Contents </h3>
+
+<ol>
+<li><a href="#PowerSupply">Power Supply</a></li>
+<li><a href="#CrystalLayout">Crystal Layout</a></li>
+<li><a href="#Relay">Controlling the Relay</a></li>
+<li><a href="#TestCircuit">Testing the Circuit</a></li>
+</ol>
 <h3> Power Supply </h3>
 
+<p><a name="PowerSupply"></a></p>
 <p>I did not want to deal with multiple wires coming in and out of the oven so I decided to power the board from the mains. This meant incorporating
 an AC to DC (3.3V) stage. The stage consists of a rectifier implemented using a diode-bridge, before rectifying I step down the voltage from 115V to
 24V so that I can use components (diodes, capacitors) rated at lower voltages which makes the entire build cheaper.  </p>
@@ -131,6 +140,7 @@ Figure 3 : Schematic of 10V and 3.3V supply generation</p>
 voltages or power. We would have needed a buck converter if the power involved was higher to improve efficiency of the conversion from 10V to 3.3V.</p>
 <h3> Crystal Layout </h3>
 
+<p><a name="CrystalLayout"></a></p>
 <p>The crystal oscilator unit perhaps contains the highest frequency signals (24MHz) in our board. For this reason we must take care in routing and placing it in such 
 a way that it doesn't couple onto nearby traces nor it get affected due to noise in nearby traces. Capacitive and inductive coupling are inevitable when traces are 
 routed in close proximity to each other, however, we can decrease the extent of such coupling by following certain guidelines during route and placing. Capacitive 
@@ -151,6 +161,7 @@ flowing under the crystal unit (this is due to increase in inductance due to lar
 the crystal unit's local ground). This further improves the integrity of all signals involved in our crystal unit. </p>
 <h3> Controlling the Relay </h3>
 
+<p><a name="Relay"></a></p>
 <p>The relay I used requires about 15mA of current to turn on, the STM32L053 can deliver it but while operating at near its max rating which decreases its lifetime. 
 Instead, I use an NPN bjt to drive the relay while controlling it with the mcu. </p>
 <p><img src="/images/relayControl.png" width="800" height="600" />
@@ -160,6 +171,7 @@ is driven into saturation, from the datasheet for 2SD1805 we see that the typica
  Ib independent of Ic as long as its sufficient to make Vbe &gt; 0.7V (turn on base-emitter junction). I chose Ib to be 10mA from which I calculate Rb = (3.3V - Vbe)/Ib = (3.3 - 0.7)/0.01 = 260 Ohms. I therefore, use 260 Ohms for Rb.</p>
 <h3> Testing the Circuit </h3>
 
+<p><a name="TestCircuit"></a></p>
 <p>Finished my finals this week, so I found some time to test the board. I first did continuity tests with a multimeter before powering the board to make sure there aren't
 any shorts (especially between the voltage rails). To test the board, I powered it with a variac (variable output transformer) for safety reasons. The measurements I took
 are given below</p>
