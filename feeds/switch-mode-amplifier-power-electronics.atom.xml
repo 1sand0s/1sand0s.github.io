@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Switch Mode Amplifier, Power Electronics</title><link href="/" rel="alternate"></link><link href="/feeds/switch-mode-amplifier-power-electronics.atom.xml" rel="self"></link><id>/</id><updated>2021-12-30T19:11:00-06:00</updated><entry><title>H-Bridge Inverter</title><link href="/h-bridge-inverter.html" rel="alternate"></link><published>2021-12-30T19:11:00-06:00</published><updated>2021-12-30T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-12-30:/h-bridge-inverter.html</id><summary type="html">&lt;p&gt;This post details how I chose the MOSFETs and boostrap circuitry(Capacitor and Diode) for my H-Bridge Inverter Design&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img src="/images/HBridgeInverter.png" width="800" height="600" /&gt;
+Figure 1 : H-Bridge Inverter board&lt;/p&gt;
+&lt;h3&gt; Table of Contents &lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="#Inverter"&gt;What is an Inverter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#MOSSelection"&gt;MOSFET Selection&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Boostrap"&gt;Boostrap Circuit Design&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#CircuitTesting"&gt;Circuit Testing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Efficiency"&gt;Efficiency Measurement&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/H-Bridge-Inverter"&gt;Github Link to the H-Bridge Inverter repository&lt;/a&gt;&lt;/p&gt;</content><category term="H-Bridge"></category><category term="Inverter"></category></entry></feed>
