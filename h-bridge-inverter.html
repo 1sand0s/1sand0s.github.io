@@ -39,8 +39,8 @@
 
         <meta name="author" content="AudiTT">
 
-        <meta name="tags" content="H-Bridge">
-        <meta name="tags" content="Inverter">
+        <meta name="tags" content="Switch Mode Amplifier">
+        <meta name="tags" content="Power Electronics">
 
 	                <meta property="og:locale" content="">
 		<meta property="og:site_name" content="Corner House at UT">
@@ -107,7 +107,17 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
     <!-- Post Content -->
     <article>
-        <p><img src="/images/HBridgeInverter.png" width="800" height="600" />
+        <p>I took Power Electronics Laboratory (EE462L/EE394-7) course during Fall 2021 and long story short, I enjoyed it immensely. While dealing with circuits operating at 
+few 10s of watts, I never really fussed a lot about efficiency but once that power starts to go up, efficiency becomes paramount (not just to minimize energy wasted 
+but that wasted energy often manifests as heat, how do we now dissipate it safely?). In this context I studied and built various circuits for AC-DC rectification 
+(Diode Bridge rectifier), DC-DC converter (Buck, Boost and SEPIC) and finally DC-AC inverter (H-Bridge). I already utilized the AC-DC diode bridge rectifier for 
+powering my <a href="https://1sand0s.github.io/solder-reflow-oven-20.html">Solder Reflow Oven 2.0</a>, so suffice to say that the knowledge I acquired during this 
+course has already been put to good use. </p>
+<p>One of the most interesting aspects of this course was the H-Bridge Inverter design challenge. The challenge was based on optimizing along two thrusts, the first 
+thrust focused on maximizing the efficiency of the inverter and the second thrust was concerned with minimizing the bill of materials (BOM). We were tasked with 
+selecting the power MOSFETs which were a part of the phase legs of the inverter and in designing the boostrap circuitry required to provide a floating voltage source 
+to drive the high-side MOSFETs in each phase leg.     </p>
+<p><img src="/images/HBridgeInverter.png" width="800" height="600" />
 Figure 1 : H-Bridge Inverter board</p>
 <h3> Table of Contents </h3>
 
@@ -122,7 +132,7 @@ Figure 1 : H-Bridge Inverter board</p>
     </article>
 
         <div class="tags">
-            <p>tags: <a href="/tag/h-bridge.html">H-Bridge</a>, <a href="/tag/inverter.html">Inverter</a></p>
+            <p>tags: <a href="/tag/switch-mode-amplifier.html">Switch Mode Amplifier</a>, <a href="/tag/power-electronics.html">Power Electronics</a></p>
         </div>
 
     <hr>

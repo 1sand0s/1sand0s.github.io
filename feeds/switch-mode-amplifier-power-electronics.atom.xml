@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Switch Mode Amplifier, Power Electronics</title><link href="/" rel="alternate"></link><link href="/feeds/switch-mode-amplifier-power-electronics.atom.xml" rel="self"></link><id>/</id><updated>2021-12-30T19:11:00-06:00</updated><entry><title>H-Bridge Inverter</title><link href="/h-bridge-inverter.html" rel="alternate"></link><published>2021-12-30T19:11:00-06:00</published><updated>2021-12-30T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-12-30:/h-bridge-inverter.html</id><summary type="html">&lt;p&gt;This post details how I chose the MOSFETs and boostrap circuitry(Capacitor and Diode) for my H-Bridge Inverter Design&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img src="/images/HBridgeInverter.png" width="800" height="600" /&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Corner House at UT - Switch Mode Amplifier, Power Electronics</title><link href="/" rel="alternate"></link><link href="/feeds/switch-mode-amplifier-power-electronics.atom.xml" rel="self"></link><id>/</id><updated>2021-12-30T19:11:00-06:00</updated><entry><title>H-Bridge Inverter</title><link href="/h-bridge-inverter.html" rel="alternate"></link><published>2021-12-30T19:11:00-06:00</published><updated>2021-12-30T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-12-30:/h-bridge-inverter.html</id><summary type="html">&lt;p&gt;This post details how I chose the MOSFETs and boostrap circuitry(Capacitor and Diode) for my H-Bridge Inverter Design&lt;/p&gt;</summary><content type="html">&lt;p&gt;I took Power Electronics Laboratory (EE462L/EE394-7) course during Fall 2021 and long story short, I enjoyed it immensely. While dealing with circuits operating at 
+few 10s of watts, I never really fussed a lot about efficiency but once that power starts to go up, efficiency becomes paramount (not just to minimize energy wasted 
+but that wasted energy often manifests as heat, how do we now dissipate it safely?). In this context I studied and built various circuits for AC-DC rectification 
+(Diode Bridge rectifier), DC-DC converter (Buck, Boost and SEPIC) and finally DC-AC inverter (H-Bridge). I already utilized the AC-DC diode bridge rectifier for 
+powering my &lt;a href="https://1sand0s.github.io/solder-reflow-oven-20.html"&gt;Solder Reflow Oven 2.0&lt;/a&gt;, so suffice to say that the knowledge I acquired during this 
+course has already been put to good use. &lt;/p&gt;
+&lt;p&gt;One of the most interesting aspects of this course was the H-Bridge Inverter design challenge. The challenge was based on optimizing along two thrusts, the first 
+thrust focused on maximizing the efficiency of the inverter and the second thrust was concerned with minimizing the bill of materials (BOM). We were tasked with 
+selecting the power MOSFETs which were a part of the phase legs of the inverter and in designing the boostrap circuitry required to provide a floating voltage source 
+to drive the high-side MOSFETs in each phase leg.     &lt;/p&gt;
+&lt;p&gt;&lt;img src="/images/HBridgeInverter.png" width="800" height="600" /&gt;
 Figure 1 : H-Bridge Inverter board&lt;/p&gt;
 &lt;h3&gt; Table of Contents &lt;/h3&gt;
 
@@ -10,4 +20,4 @@ Figure 1 : H-Bridge Inverter board&lt;/p&gt;
 &lt;li&gt;&lt;a href="#CircuitTesting"&gt;Circuit Testing&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#Efficiency"&gt;Efficiency Measurement&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;a href="https://github.com/1sand0s/H-Bridge-Inverter"&gt;Github Link to the H-Bridge Inverter repository&lt;/a&gt;&lt;/p&gt;</content><category term="H-Bridge"></category><category term="Inverter"></category></entry></feed>
+&lt;p&gt;&lt;a href="https://github.com/1sand0s/H-Bridge-Inverter"&gt;Github Link to the H-Bridge Inverter repository&lt;/a&gt;&lt;/p&gt;</content><category term="Switch Mode Amplifier"></category><category term="Power Electronics"></category></entry></feed>
