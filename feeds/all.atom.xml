@@ -8,7 +8,8 @@ course has already been put to good use. &lt;/p&gt;
 &lt;p&gt;One of the most interesting aspects of this course was the H-Bridge Inverter design challenge. The challenge was based on optimizing along two thrusts, the first 
 thrust focused on maximizing the efficiency of the inverter and the second thrust was concerned with minimizing the bill of materials (BOM). We were tasked with 
 selecting the power MOSFETs which were a part of the phase legs of the inverter and in designing the boostrap circuitry required to provide a floating voltage source 
-to drive the high-side MOSFETs in each phase leg.     &lt;/p&gt;
+to drive the high-side MOSFETs in each phase leg.&lt;/p&gt;
+&lt;p&gt;My design achieved the 2nd highest efficiency in the history of the course and I will discuss how I went about modelling the circuit to choose the appropriate components.      &lt;/p&gt;
 &lt;p&gt;&lt;img src="/images/HBridgeInverter.png" width="800" height="600" /&gt;
 Figure 1 : H-Bridge Inverter board&lt;/p&gt;
 &lt;h3&gt; Table of Contents &lt;/h3&gt;
@@ -20,6 +21,10 @@ Figure 1 : H-Bridge Inverter board&lt;/p&gt;
 &lt;li&gt;&lt;a href="#CircuitTesting"&gt;Circuit Testing&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#Efficiency"&gt;Efficiency Measurement&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
+&lt;h3&gt;What is an Inverter&lt;/h3&gt;
+
+&lt;p&gt;&lt;a name="Inverter"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;An inverter is a device that changes a DC input to an AC output.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/1sand0s/H-Bridge-Inverter"&gt;Github Link to the H-Bridge Inverter repository&lt;/a&gt;&lt;/p&gt;</content><category term="Switch Mode Amplifier"></category><category term="Power Electronics"></category></entry><entry><title>Solder Reflow Oven 2.0</title><link href="/solder-reflow-oven-20.html" rel="alternate"></link><published>2021-11-24T19:11:00-06:00</published><updated>2021-11-24T19:11:00-06:00</updated><author><name>AudiTT</name></author><id>tag:None,2021-11-24:/solder-reflow-oven-20.html</id><summary type="html">&lt;p&gt;This post details how to build a Solder Reflow Oven controller based on PID&lt;/p&gt;</summary><content type="html">&lt;p&gt;Found some time to work on hobby projects for thanksgiving break and seeing that I 
 had to limit myself to using IC packages with extended leads due to lack of a way to 
 soldering them, I decided on building a Solder Reflow Oven 2.0 !&lt;/p&gt;
