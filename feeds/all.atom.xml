@@ -392,7 +392,7 @@ portion of the S-Band.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;h3&gt; Functional Diagram &lt;/h3&gt;
 
-&lt;p&gt;&lt;img alt="thumbnail" height="450px" src="/blockDiagram.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="thumbnail" height="450px" src="/images/blockDiagram.png"&gt;&lt;/p&gt;
 &lt;p&gt;The functional diagram of our build is presented above. All images used are representational and attributions to the respective authors can be found at the bottom of this page.
 At the highest level of abstraction, our GPR is made up of the PC, GPR controller board and the transmit and receive antennas. &lt;/p&gt;
 &lt;p&gt;Functions of the PC&lt;/p&gt;
